@@ -5,7 +5,11 @@
  *
  *  DS28E16.c - DS28E16 device module. Requires low level 1-Wire connection.
  */
+<<<<<<< HEAD
 #define pr_fmt(fmt)	"[ds28e16] %s: " fmt, __func__
+=======
+#define pr_fmt(fmt) "[ds28e16] %s: " fmt, __func__
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 #include <linux/slab.h> /* kfree() */
 #include <linux/module.h>
@@ -32,10 +36,17 @@
 #include <linux/random.h>
 #include <linux/sched.h>
 
+<<<<<<< HEAD
 #define ds_info	pr_info
 #define ds_dbg	pr_debug
 #define ds_err	pr_err
 #define ds_log	pr_debug
+=======
+#define ds_info pr_info
+#define ds_dbg pr_debug
+#define ds_err pr_err
+#define ds_log pr_debug
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 struct ds28e16_data {
 	struct platform_device *pdev;
@@ -44,17 +55,26 @@ struct ds28e16_data {
 	int version;
 	int cycle_count;
 	bool batt_verified;
+<<<<<<< HEAD
 #ifdef	CONFIG_FACTORY_BUILD
 	bool factory_enable;
 #endif
 
 	struct delayed_work	battery_verify_work;
+=======
+#ifdef CONFIG_FACTORY_BUILD
+	bool factory_enable;
+#endif
+
+	struct delayed_work battery_verify_work;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	struct power_supply *verify_psy;
 	struct power_supply_desc verify_psy_d;
 };
 
 unsigned int attr_trytimes = 1;
 
+<<<<<<< HEAD
 unsigned char session_seed[32] = {
 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
@@ -66,6 +86,18 @@ unsigned char S_secret[32] = {
 0xDA, 0xC4, 0x41, 0x2F, 0x48, 0x93, 0xB5, 0xD9,
 0xE1, 0xE5, 0x4B, 0x20, 0x9B, 0xF3, 0x77, 0x39};
 unsigned char challenge[32] = {0x00};
+=======
+unsigned char session_seed[32] = { 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+				   0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+				   0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+				   0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+				   0xAA, 0xAA, 0xAA, 0xAA };
+unsigned char S_secret[32] = { 0x0C, 0x99, 0x2B, 0xD3, 0x95, 0xDB, 0xA0, 0xB4,
+			       0xEF, 0x07, 0xB3, 0xD8, 0x75, 0xF3, 0xC7, 0xAE,
+			       0xDA, 0xC4, 0x41, 0x2F, 0x48, 0x93, 0xB5, 0xD9,
+			       0xE1, 0xE5, 0x4B, 0x20, 0x9B, 0xF3, 0x77, 0x39 };
+unsigned char challenge[32] = { 0x00 };
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 int auth_ANON = 1;
 int auth_BDCONST = 1;
 int pagenumber = 0;
@@ -76,7 +108,11 @@ unsigned short CRC16;
 const short oddparity[16] = { 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0 };
 unsigned char last_result_byte = RESULT_SUCCESS;
 
+<<<<<<< HEAD
 unsigned char MANID[2] = {0x00};
+=======
+unsigned char MANID[2] = { 0x00 };
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 // mi add
 unsigned char flag_mi_romid = 0;
@@ -85,15 +121,24 @@ unsigned char flag_mi_page0_data = 0;
 unsigned char flag_mi_page1_data = 0;
 unsigned char flag_mi_counter = 0;
 unsigned char flag_mi_auth_result = 0;
+<<<<<<< HEAD
 unsigned char mi_romid[8] = {0x00};
 unsigned char mi_status[8] = {0x00};
 unsigned char mi_page0_data[16] = {0x00};
 unsigned char mi_page1_data[16] = {0x00};
 unsigned char mi_counter[16] = {0x00};
+=======
+unsigned char mi_romid[8] = { 0x00 };
+unsigned char mi_status[8] = { 0x00 };
+unsigned char mi_page0_data[16] = { 0x00 };
+unsigned char mi_page1_data[16] = { 0x00 };
+unsigned char mi_counter[16] = { 0x00 };
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 int mi_auth_result = 0x00;
 
 static void set_sched_affinity_to_current(void)
 {
+<<<<<<< HEAD
     long ret;
     int current_cpu;
 
@@ -106,10 +151,27 @@ static void set_sched_affinity_to_current(void)
     } else {
         pr_info("Setting cpu affinity to current cpu(%d) in %s.\n", current_cpu, __func__);
     }
+=======
+	long ret;
+	int current_cpu;
+
+	preempt_disable();
+	current_cpu = smp_processor_id();
+	ret = sched_setaffinity(CURRENT_DS28E16_TASK, cpumask_of(current_cpu));
+	preempt_enable();
+	if (ret) {
+		pr_info("Setting cpu affinity to current cpu failed(%ld) in %s.\n",
+			ret, __func__);
+	} else {
+		pr_info("Setting cpu affinity to current cpu(%d) in %s.\n",
+			current_cpu, __func__);
+	}
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 }
 
 static void set_sched_affinity_to_all(void)
 {
+<<<<<<< HEAD
     long ret;
     cpumask_t dstp;
 
@@ -120,6 +182,20 @@ static void set_sched_affinity_to_all(void)
     } else {
         pr_info("Setting cpu affinity to all valid cpus in %s.\n", __func__);
     }
+=======
+	long ret;
+	cpumask_t dstp;
+
+	cpumask_setall(&dstp);
+	ret = sched_setaffinity(CURRENT_DS28E16_TASK, &dstp);
+	if (ret) {
+		pr_info("Setting cpu affinity to all valid cpus failed(%ld) in %s.\n",
+			ret, __func__);
+	} else {
+		pr_info("Setting cpu affinity to all valid cpus in %s.\n",
+			__func__);
+	}
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 }
 
 unsigned char crc_low_first(unsigned char *ptr, unsigned char len)
@@ -161,9 +237,15 @@ short Read_RomID(unsigned char *RomID)
 	for (i = 0; i < 8; i++)
 		RomID[i] = read_byte();
 
+<<<<<<< HEAD
 	ds_info("RomID = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
 	RomID[0], RomID[1], RomID[2], RomID[3],
 	RomID[4], RomID[5], RomID[6], RomID[7]);
+=======
+	ds_info("RomID = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n", RomID[0],
+		RomID[1], RomID[2], RomID[3], RomID[4], RomID[5], RomID[6],
+		RomID[7]);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	crc = crc_low_first(RomID, 7);
 	ds_dbg("crc_low_first = %02x\n", crc);
@@ -188,7 +270,11 @@ static int ds28el16_Read_RomID_retry(unsigned char *RomID)
 	for (i = 0; i < GET_ROM_ID_RETRY; i++) {
 		ds_info("read rom id communication start %d...\n", i);
 
+<<<<<<< HEAD
 		if (Read_RomID(RomID) == DS_TRUE){
+=======
+		if (Read_RomID(RomID) == DS_TRUE) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			set_sched_affinity_to_all();
 			return DS_TRUE;
 		}
@@ -236,8 +322,13 @@ static int ds28el16_get_page_data_retry(int page, unsigned char *data)
 	return DS_FALSE;
 }
 
+<<<<<<< HEAD
 static int DS28E16_cmd_computeS_Secret_retry(int anon, int bdconst,
 				int pg, unsigned char *partial)
+=======
+static int DS28E16_cmd_computeS_Secret_retry(int anon, int bdconst, int pg,
+					     unsigned char *partial)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	int i;
 
@@ -245,16 +336,26 @@ static int DS28E16_cmd_computeS_Secret_retry(int anon, int bdconst,
 		return DS_FALSE;
 
 	for (i = 0; i < GET_S_SECRET_RETRY; i++) {
+<<<<<<< HEAD
 		if (DS28E16_cmd_computeS_Secret(anon, bdconst,
 				pg, partial) == DS_TRUE)
+=======
+		if (DS28E16_cmd_computeS_Secret(anon, bdconst, pg, partial) ==
+		    DS_TRUE)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			return DS_TRUE;
 	}
 
 	return DS_FALSE;
 }
 
+<<<<<<< HEAD
 static int DS28E16_cmd_computeReadPageAuthentication_retry(int anon, int pg,
 				unsigned char *challenge, unsigned char *hmac)
+=======
+static int DS28E16_cmd_computeReadPageAuthentication_retry(
+	int anon, int pg, unsigned char *challenge, unsigned char *hmac)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	int i;
 
@@ -262,15 +363,23 @@ static int DS28E16_cmd_computeReadPageAuthentication_retry(int anon, int pg,
 		return DS_FALSE;
 
 	for (i = 0; i < GET_MAC_RETRY; i++) {
+<<<<<<< HEAD
 		if (DS28E16_cmd_computeReadPageAuthentication(anon, pg,
 					challenge, hmac) == DS_TRUE)
+=======
+		if (DS28E16_cmd_computeReadPageAuthentication(
+			    anon, pg, challenge, hmac) == DS_TRUE)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			return DS_TRUE;
 	}
 
 	return DS_FALSE;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 unsigned short docrc16(unsigned short data)
 {
 	data = (data ^ (CRC16 & 0xff)) & 0xff;
@@ -280,15 +389,26 @@ unsigned short docrc16(unsigned short data)
 		CRC16 ^= 0xc001;
 
 	data <<= 6;
+<<<<<<< HEAD
 	CRC16  ^= data;
 	data <<= 1;
 	CRC16   ^= data;
+=======
+	CRC16 ^= data;
+	data <<= 1;
+	CRC16 ^= data;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	return CRC16;
 }
 
 int DS28E16_standard_cmd_flow(unsigned char *write_buf, int delay_ms,
+<<<<<<< HEAD
 unsigned char *read_buf, int *read_len, int write_len)
+=======
+			      unsigned char *read_buf, int *read_len,
+			      int write_len)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	unsigned char buf[128];
 	int i;
@@ -340,7 +460,11 @@ unsigned char *read_buf, int *read_len, int write_len)
 	// check for strong pull-up
 	if (delay_ms > 0) {
 		write_byte(CMD_RELEASE_BYTE);
+<<<<<<< HEAD
 		Delay_us(1000*delay_ms);
+=======
+		Delay_us(1000 * delay_ms);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 
 	read_byte();
@@ -409,8 +533,13 @@ int DS28E16_cmd_readStatus(unsigned char *data)
 	write_buf[write_len++] = len_byte;
 	write_buf[write_len++] = CMD_READ_STATUS;
 
+<<<<<<< HEAD
 	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_READ*tm,
 		read_buf, &read_len, write_len)) {
+=======
+	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_READ * tm,
+				      read_buf, &read_len, write_len)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (read_buf[0] == RESULT_SUCCESS) {
 			last_result_byte = read_buf[0];
 			memcpy(data, &read_buf[1], 8);
@@ -445,6 +574,7 @@ int DS28E16_cmd_readMemory(int pg, unsigned char *data)
 	int length_byte = 2;
 	unsigned char pagenum = (unsigned char)pg & 0x03;
 
+<<<<<<< HEAD
 	switch (pagenum)
 	{
 		case 0x00:
@@ -454,6 +584,16 @@ int DS28E16_cmd_readMemory(int pg, unsigned char *data)
 			}
 			break;
 		/*case 0x01:
+=======
+	switch (pagenum) {
+	case 0x00:
+		if (flag_mi_page0_data) {
+			memcpy(data, mi_page0_data, 16);
+			return DS_TRUE;
+		}
+		break;
+	/*case 0x01:
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			if (flag_mi_page1_data) {
 				memcpy(data, mi_page1_data, 16);
 				return DS_TRUE;
@@ -465,8 +605,13 @@ int DS28E16_cmd_readMemory(int pg, unsigned char *data)
 				return DS_TRUE;
 			}
 			break;*/
+<<<<<<< HEAD
 		default:
 			break;
+=======
+	default:
+		break;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 
 	last_result_byte = RESULT_FAIL_NONE;
@@ -494,8 +639,13 @@ int DS28E16_cmd_readMemory(int pg, unsigned char *data)
 	write_buf[write_len++] = CMD_READ_MEM;
 	write_buf[write_len++] = pagenum;
 
+<<<<<<< HEAD
 	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_READ*tm,
 		read_buf, &read_len, write_len)) {
+=======
+	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_READ * tm,
+				      read_buf, &read_len, write_len)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (read_len == 33) {
 			last_result_byte = read_buf[0];
 			if (read_buf[0] == RESULT_SUCCESS) {
@@ -583,8 +733,13 @@ int DS28E16_cmd_writeMemory(int pg, unsigned char *data)
 	memcpy(&write_buf[write_len], data, 16);
 	write_len += 16;
 
+<<<<<<< HEAD
 	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_WRITE*tm,
 		read_buf, &read_len, write_len)) {
+=======
+	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_WRITE * tm,
+				      read_buf, &read_len, write_len)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		/*if (read_len == 1) {
 			last_result_byte = read_buf[0];
 			if (read_buf[0] == RESULT_SUCCESS){
@@ -643,7 +798,12 @@ int DS28E16_cmd_decrementCounter(void)
 	write_buf[write_len++] = 1;
 	write_buf[write_len++] = CMD_DECREMENT_CNT;
 
+<<<<<<< HEAD
 	if (DS28E16_standard_cmd_flow(write_buf, 50, read_buf, &read_len, write_len)) {
+=======
+	if (DS28E16_standard_cmd_flow(write_buf, 50, read_buf, &read_len,
+				      write_len)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (read_len == 1) {
 			last_result_byte = read_buf[0];
 			if (read_buf[0] == RESULT_SUCCESS)
@@ -693,8 +853,13 @@ int DS28E16_cmd_setPageProtection(int page, unsigned char prot)
 	write_buf[write_len++] = page & 0x03;
 	write_buf[write_len++] = prot & 0x03;
 
+<<<<<<< HEAD
 	if (DS28E16_standard_cmd_flow(write_buf,
 	DELAY_DS28E16_EE_WRITE*tm, read_buf, &read_len, write_len)) {
+=======
+	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_WRITE * tm,
+				      read_buf, &read_len, write_len)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (read_len == 1) {
 			last_result_byte = read_buf[0];
 			if (read_buf[0] == RESULT_SUCCESS)
@@ -734,8 +899,13 @@ int DS28E16_cmd_device_disable(int op, unsigned char *password)
 	memcpy(&write_buf[write_len], password, 8);
 	write_len += 8;
 
+<<<<<<< HEAD
 	if (DS28E16_standard_cmd_flow(write_buf,
 	DELAY_DS28E16_EE_WRITE, read_buf, &read_len, write_len)) {
+=======
+	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_WRITE,
+				      read_buf, &read_len, write_len)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (read_len == 1) {
 			last_result_byte = read_buf[0];
 			if (read_buf[0] == RESULT_SUCCESS)
@@ -759,7 +929,12 @@ int DS28E16_cmd_device_disable(int op, unsigned char *password)
 /// DS_FALSE - command failed
 ///
 int DS28E16_cmd_computeReadPageAuthentication(int anon, int pg,
+<<<<<<< HEAD
 unsigned char *challenge, unsigned char *hmac)
+=======
+					      unsigned char *challenge,
+					      unsigned char *hmac)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	unsigned char write_buf[255];
 	unsigned char read_buf[255];
@@ -777,15 +952,25 @@ unsigned char *challenge, unsigned char *hmac)
 		write_buf[write_len] = (write_buf[write_len] | 0xE0);
 
 	write_len++;
+<<<<<<< HEAD
 	write_buf[write_len++] = 0x02;// Fixed Parameter
 	memcpy(&write_buf[write_len], challenge, 32);// Challenge
+=======
+	write_buf[write_len++] = 0x02; // Fixed Parameter
+	memcpy(&write_buf[write_len], challenge, 32); // Challenge
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	write_len += 32;
 
 	ds_dbg("computeReadPageAuthen:\n");
 	for (i = 0; i < 35; i++)
 		ds_dbg("write_buf[%d] = %02x ", i, write_buf[i]);
 
+<<<<<<< HEAD
 	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_WRITE, read_buf, &read_len, write_len)) {
+=======
+	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_WRITE,
+				      read_buf, &read_len, write_len)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		last_result_byte = read_buf[0];
 		if (read_buf[0] == RESULT_SUCCESS) {
 			memcpy(hmac, &read_buf[1], 32);
@@ -808,8 +993,13 @@ unsigned char *challenge, unsigned char *hmac)
 /// DS_TRUE - command successful @n
 /// DS_FALSE - command failed
 ///
+<<<<<<< HEAD
 int DS28E16_cmd_computeS_Secret(int anon, int bdconst,
 int pg, unsigned char *partial)
+=======
+int DS28E16_cmd_computeS_Secret(int anon, int bdconst, int pg,
+				unsigned char *partial)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	unsigned char write_buf[40];
 	unsigned char read_buf[40];
@@ -831,7 +1021,11 @@ int pg, unsigned char *partial)
 
 	write_buf[write_len] = param;
 	write_len++;
+<<<<<<< HEAD
 	write_buf[write_len++] = 0x08;// Fixed Parameter
+=======
+	write_buf[write_len++] = 0x08; // Fixed Parameter
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	memcpy(&write_buf[write_len], partial, 32); // Partial Secret
 	write_len += 32;
 
@@ -840,7 +1034,11 @@ int pg, unsigned char *partial)
 		ds_dbg("write_buf[%d] = %02x ", i, write_buf[i]);
 
 	if (DS28E16_standard_cmd_flow(write_buf, DELAY_DS28E16_EE_WRITE,
+<<<<<<< HEAD
 	read_buf, &read_len, write_len)) {
+=======
+				      read_buf, &read_len, write_len)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		last_result_byte = read_buf[0];
 		if (read_buf[0] == RESULT_SUCCESS)
 			return DS_TRUE;
@@ -849,8 +1047,14 @@ int pg, unsigned char *partial)
 	return DS_FALSE;
 }
 
+<<<<<<< HEAD
 int AuthenticateDS28E16(int anon, int bdconst, int S_Secret_PageNum, int PageNum,
 unsigned char *Challenge, unsigned char *Secret_Seeds, unsigned char *S_Secret)
+=======
+int AuthenticateDS28E16(int anon, int bdconst, int S_Secret_PageNum,
+			int PageNum, unsigned char *Challenge,
+			unsigned char *Secret_Seeds, unsigned char *S_Secret)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	unsigned char PageData[32], MAC_Read_Value[32], CAL_MAC[32];
 	unsigned char status_chip[16];
@@ -871,16 +1075,26 @@ unsigned char *Challenge, unsigned char *Secret_Seeds, unsigned char *S_Secret)
 		return ERROR_R_ROMID;
 
 	// DS28E16 calculate its session secret
+<<<<<<< HEAD
 	flag = DS28E16_cmd_computeS_Secret_retry(anon,
 	bdconst, S_Secret_PageNum, Secret_Seeds);
+=======
+	flag = DS28E16_cmd_computeS_Secret_retry(
+		anon, bdconst, S_Secret_PageNum, Secret_Seeds);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (flag == DS_FALSE) {
 		ds_err("DS28E16_cmd_computeS_Secret error");
 		return ERROR_S_SECRET;
 	}
 
 	// DS28E16 compute its MAC based on above sessio secret
+<<<<<<< HEAD
 	flag = DS28E16_cmd_computeReadPageAuthentication_retry(anon,
 	PageNum, Challenge, MAC_Read_Value);
+=======
+	flag = DS28E16_cmd_computeReadPageAuthentication_retry(
+		anon, PageNum, Challenge, MAC_Read_Value);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (flag == DS_FALSE) {
 		ds_err("DS28E16_cmd_computeReadPageAuthentication error");
 		return ERROR_COMPUTE_MAC;
@@ -930,7 +1144,12 @@ unsigned char *Challenge, unsigned char *Secret_Seeds, unsigned char *S_Secret)
 
 	// insert Bind Data Page number
 	MAC_Computer_Datainput[msg_len] = PageNum & 0x03;
+<<<<<<< HEAD
 	MAC_Computer_Datainput[msg_len] = MAC_Computer_Datainput[msg_len] & 0x03;
+=======
+	MAC_Computer_Datainput[msg_len] =
+		MAC_Computer_Datainput[msg_len] & 0x03;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	msg_len += 1;
 
 	// insert MANID
@@ -942,7 +1161,12 @@ unsigned char *Challenge, unsigned char *Secret_Seeds, unsigned char *S_Secret)
 
 	ds_dbg("host data:\n");
 	for (i = 0; i < 80; i++)
+<<<<<<< HEAD
 		ds_dbg("MAC_Computer_Datainput[%d] = %02x ", i, MAC_Computer_Datainput[i]);
+=======
+		ds_dbg("MAC_Computer_Datainput[%d] = %02x ", i,
+		       MAC_Computer_Datainput[i]);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	ds_dbg("host mac:\n");
 	for (i = 0; i < 32; i++)
@@ -973,7 +1197,12 @@ static int ds28el16_do_authentication(struct ds28e16_data *data)
 	set_sched_affinity_to_current();
 	for (i = 0; i < GET_VERIFY_RETRY; i++) {
 		result = AuthenticateDS28E16(auth_ANON, auth_BDCONST, 0,
+<<<<<<< HEAD
 			pagenumber, challenge, session_seed, S_secret);
+=======
+					     pagenumber, challenge,
+					     session_seed, S_secret);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (result == DS_TRUE) {
 			data->batt_verified = 1;
 			set_sched_affinity_to_all();
@@ -990,7 +1219,10 @@ static int ds28el16_do_authentication(struct ds28e16_data *data)
 	return result;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 /* All power supply functions here */
 
 static enum power_supply_property verify_props[] = {
@@ -1012,6 +1244,7 @@ static enum power_supply_property verify_props[] = {
 	POWER_SUPPLY_PROP_AUTHENTIC,
 };
 
+<<<<<<< HEAD
 static int verify_get_property(struct power_supply *psy, enum power_supply_property psp,
 					union power_supply_propval *val)
 {
@@ -1020,6 +1253,17 @@ static int verify_get_property(struct power_supply *psy, enum power_supply_prope
 	unsigned char buf[50];
 	int ret;
 #ifdef	CONFIG_FACTORY_BUILD
+=======
+static int verify_get_property(struct power_supply *psy,
+			       enum power_supply_property psp,
+			       union power_supply_propval *val)
+{
+	struct ds28e16_data *data = power_supply_get_drvdata(psy);
+	unsigned char pagedata[16] = { 0x00 };
+	unsigned char buf[50];
+	int ret;
+#ifdef CONFIG_FACTORY_BUILD
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	static bool chip_ok_flag;
 #endif
 
@@ -1043,8 +1287,13 @@ static int verify_get_property(struct power_supply *psy, enum power_supply_prope
 	case POWER_SUPPLY_PROP_ROMID:
 		ret = Read_RomID(mi_romid);
 		ds_err("get RomID = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+<<<<<<< HEAD
 				mi_romid[0], mi_romid[1], mi_romid[2], mi_romid[3],
 				mi_romid[4], mi_romid[5], mi_romid[6], mi_romid[7]);
+=======
+		       mi_romid[0], mi_romid[1], mi_romid[2], mi_romid[3],
+		       mi_romid[4], mi_romid[5], mi_romid[6], mi_romid[7]);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		memcpy(val->arrayval, mi_romid, 8);
 		if (ret != DS_TRUE)
 			return -EAGAIN;
@@ -1052,11 +1301,21 @@ static int verify_get_property(struct power_supply *psy, enum power_supply_prope
 	case POWER_SUPPLY_PROP_CHIP_OK:
 		ret = Read_RomID(mi_romid);
 		ds_err("get chip_ok read RomID = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+<<<<<<< HEAD
 				mi_romid[0], mi_romid[1], mi_romid[2], mi_romid[3],
 				mi_romid[4], mi_romid[5], mi_romid[6], mi_romid[7]);
 #ifdef CONFIG_FACTORY_BUILD
 		ds_err("CONFIG_FACTORY_BUILD, chip_ok_flag=%d.\n", chip_ok_flag);
 		if ((mi_romid[0] == 0x9f) && (mi_romid[6] == 0x04) && ((mi_romid[5] & 0xf0) == 0xf0)) {
+=======
+		       mi_romid[0], mi_romid[1], mi_romid[2], mi_romid[3],
+		       mi_romid[4], mi_romid[5], mi_romid[6], mi_romid[7]);
+#ifdef CONFIG_FACTORY_BUILD
+		ds_err("CONFIG_FACTORY_BUILD, chip_ok_flag=%d.\n",
+		       chip_ok_flag);
+		if ((mi_romid[0] == 0x9f) && (mi_romid[6] == 0x04) &&
+		    ((mi_romid[5] & 0xf0) == 0xf0)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			val->intval = true;
 			if (data->factory_enable)
 				chip_ok_flag = true;
@@ -1066,7 +1325,12 @@ static int verify_get_property(struct power_supply *psy, enum power_supply_prope
 			val->intval = false;
 		}
 #else
+<<<<<<< HEAD
 		if ((mi_romid[0] == 0x9f) && (mi_romid[6] == 0x04) && ((mi_romid[5] & 0xf0) == 0xf0))
+=======
+		if ((mi_romid[0] == 0x9f) && (mi_romid[6] == 0x04) &&
+		    ((mi_romid[5] & 0xf0) == 0xf0))
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			val->intval = true;
 		else
 			val->intval = false;
@@ -1099,8 +1363,13 @@ static int verify_get_property(struct power_supply *psy, enum power_supply_prope
 	case POWER_SUPPLY_PROP_MAXIM_BATT_CYCLE_COUNT:
 		ret = ds28el16_get_page_data_retry(DC_PAGE, pagedata);
 		if (ret == DS_TRUE) {
+<<<<<<< HEAD
 			data->cycle_count = (pagedata[2] << 16) + (pagedata[1] << 8)
 						+ pagedata[0];
+=======
+			data->cycle_count = (pagedata[2] << 16) +
+					    (pagedata[1] << 8) + pagedata[0];
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			val->intval = DC_INIT_VALUE - data->cycle_count;
 		}
 		break;
@@ -1125,7 +1394,11 @@ static int verify_set_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_PAGENUMBER:
 		pagenumber = val->intval;
 		break;
+<<<<<<< HEAD
 /*
+=======
+		/*
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	case POWER_SUPPLY_PROP_PAGEDATA:
 		memcpy(buf, val->arrayval, 16);
 		ret = DS28E16_cmd_writeMemory(pagenumber, buf);
@@ -1143,10 +1416,17 @@ static int verify_set_property(struct power_supply *psy,
 		break;
 */
 	case POWER_SUPPLY_PROP_AUTH_ANON:
+<<<<<<< HEAD
 		auth_ANON  = val->intval;
 		break;
 	case POWER_SUPPLY_PROP_AUTH_BDCONST:
 		auth_BDCONST   = val->intval;
+=======
+		auth_ANON = val->intval;
+		break;
+	case POWER_SUPPLY_PROP_AUTH_BDCONST:
+		auth_BDCONST = val->intval;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		break;
 	case POWER_SUPPLY_PROP_MAXIM_BATT_CYCLE_COUNT:
 		DS28E16_cmd_decrementCounter();
@@ -1154,7 +1434,12 @@ static int verify_set_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_AUTHENTIC:
 		if (val->intval == 1) {
 			authen_result = ds28el16_do_authentication(data);
+<<<<<<< HEAD
 			pr_err("redo authentic: authen_result: %d\n", authen_result);
+=======
+			pr_err("redo authentic: authen_result: %d\n",
+			       authen_result);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		}
 		break;
 	default:
@@ -1166,7 +1451,11 @@ static int verify_set_property(struct power_supply *psy,
 }
 
 static int verify_prop_is_writeable(struct power_supply *psy,
+<<<<<<< HEAD
 				       enum power_supply_property prop)
+=======
+				    enum power_supply_property prop)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	int ret;
 
@@ -1203,27 +1492,44 @@ static int verify_psy_register(struct ds28e16_data *ds)
 	verify_psy_cfg.drv_data = ds;
 	verify_psy_cfg.of_node = ds->dev->of_node;
 	verify_psy_cfg.num_supplicants = 0;
+<<<<<<< HEAD
 	ds->verify_psy = devm_power_supply_register(ds->dev,
 						&ds->verify_psy_d,
 						&verify_psy_cfg);
+=======
+	ds->verify_psy = devm_power_supply_register(ds->dev, &ds->verify_psy_d,
+						    &verify_psy_cfg);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (IS_ERR(ds->verify_psy)) {
 		ds_err("Failed to register verify_psy");
 		return PTR_ERR(ds->verify_psy);
 	}
 
+<<<<<<< HEAD
 	ds_log("%s power supply register successfully\n", ds->verify_psy_d.name);
 	return 0;
 }
 
 
+=======
+	ds_log("%s power supply register successfully\n",
+	       ds->verify_psy_d.name);
+	return 0;
+}
+
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 static void verify_psy_unregister(struct ds28e16_data *ds)
 {
 	power_supply_unregister(ds->verify_psy);
 }
 
 // parse dts
+<<<<<<< HEAD
 static int ds28e16_parse_dt(struct device *dev,
 				struct ds28e16_data *pdata)
+=======
+static int ds28e16_parse_dt(struct device *dev, struct ds28e16_data *pdata)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	int error, val;
 	struct device_node *np = dev->of_node;
@@ -1236,9 +1542,14 @@ static int ds28e16_parse_dt(struct device *dev,
 	else if (error != -EINVAL)
 		pdata->version = val;
 
+<<<<<<< HEAD
 #ifdef	CONFIG_FACTORY_BUILD
 	pdata->factory_enable = of_property_read_bool(np,
 			"mi,factory-enable");
+=======
+#ifdef CONFIG_FACTORY_BUILD
+	pdata->factory_enable = of_property_read_bool(np, "mi,factory-enable");
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 #endif
 
 	return 0;
@@ -1246,6 +1557,7 @@ static int ds28e16_parse_dt(struct device *dev,
 
 // read data from file
 static ssize_t ds28e16_ds_Auth_Result_status_read(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr, char *buf)
 {
 	int result;
@@ -1281,6 +1593,45 @@ struct device_attribute *attr, char *buf)
 	short status;
 	unsigned char RomID[10] = {0x00};
 	int i = 0; int count = 0;
+=======
+						  struct device_attribute *attr,
+						  char *buf)
+{
+	int result;
+
+	result = AuthenticateDS28E16(auth_ANON, auth_BDCONST, 0, pagenumber,
+				     challenge, session_seed, S_secret);
+	if (result == ERROR_R_STATUS)
+		return scnprintf(buf, PAGE_SIZE,
+				 "Authenticate failed : ERROR_R_STATUS!\n");
+	else if (result == ERROR_UNMATCH_MAC)
+		return scnprintf(buf, PAGE_SIZE,
+				 "Authenticate failed : MAC is not match!\n");
+	else if (result == ERROR_R_ROMID)
+		return scnprintf(buf, PAGE_SIZE,
+				 "Authenticate failed : ERROR_R_ROMID!\n");
+	else if (result == ERROR_COMPUTE_MAC)
+		return scnprintf(buf, PAGE_SIZE,
+				 "Authenticate failed : ERROR_COMPUTE_MAC!\n");
+	else if (result == ERROR_S_SECRET)
+		return scnprintf(buf, PAGE_SIZE,
+				 "Authenticate failed : ERROR_S_SECRET!\n");
+	else if (result == DS_TRUE)
+		return scnprintf(buf, PAGE_SIZE, "Authenticate success!!!\n");
+	else
+		return scnprintf(buf, PAGE_SIZE,
+				 "Authenticate failed : other reason.\n");
+}
+
+static ssize_t ds28e16_ds_romid_status_read(struct device *dev,
+					    struct device_attribute *attr,
+					    char *buf)
+{
+	short status;
+	unsigned char RomID[10] = { 0x00 };
+	int i = 0;
+	int count = 0;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	for (i = 0; i < attr_trytimes; i++) {
 		status = Read_RomID(RomID);
@@ -1292,6 +1643,7 @@ struct device_attribute *attr, char *buf)
 			ds_log("Read_RomID fail!\n");
 		}
 		ds_dbg("RomID = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+<<<<<<< HEAD
 		RomID[0], RomID[1], RomID[2], RomID[3],
 		RomID[4], RomID[5], RomID[6], RomID[7]);
 		Delay_us(1000);
@@ -1305,13 +1657,35 @@ struct device_attribute *attr, char *buf)
 
 static ssize_t ds28e16_ds_pagenumber_status_read(struct device *dev,
 struct device_attribute *attr, char *buf)
+=======
+		       RomID[0], RomID[1], RomID[2], RomID[3], RomID[4],
+		       RomID[5], RomID[6], RomID[7]);
+		Delay_us(1000);
+	}
+	ds_log("test done\nsuccess time : %d\n", count);
+	return scnprintf(
+		buf, PAGE_SIZE,
+		"Success = %d\nRomID = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+		count, RomID[0], RomID[1], RomID[2], RomID[3], RomID[4],
+		RomID[5], RomID[6], RomID[7]);
+}
+
+static ssize_t ds28e16_ds_pagenumber_status_read(struct device *dev,
+						 struct device_attribute *attr,
+						 char *buf)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	return scnprintf(buf, PAGE_SIZE, "%02x\n", pagenumber);
 }
 
 static ssize_t ds28e16_ds_pagenumber_store(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr,
 const char *buf, size_t count)
+=======
+					   struct device_attribute *attr,
+					   const char *buf, size_t count)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	int buf_int;
 
@@ -1327,11 +1701,21 @@ const char *buf, size_t count)
 }
 
 static ssize_t ds28e16_ds_pagedata_status_read(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr, char *buf)
 {
 	int result;
 	unsigned char pagedata[16] = {0x00};
 	int i = 0; int count = 0;
+=======
+					       struct device_attribute *attr,
+					       char *buf)
+{
+	int result;
+	unsigned char pagedata[16] = { 0x00 };
+	int i = 0;
+	int count = 0;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	for (i = 0; i < attr_trytimes; i++) {
 		result = DS28E16_cmd_readMemory(pagenumber, pagedata);
@@ -1343,6 +1727,7 @@ struct device_attribute *attr, char *buf)
 			ds_log("DS28E16_cmd_readMemory fail!\n");
 		}
 		ds_dbg("pagedata = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+<<<<<<< HEAD
 		pagedata[0], pagedata[1], pagedata[2], pagedata[3],
 		pagedata[4], pagedata[5], pagedata[6], pagedata[7],
 		pagedata[8], pagedata[9], pagedata[10], pagedata[11],
@@ -1377,6 +1762,45 @@ const char *buf, size_t count)
 	pagedata[4], pagedata[5], pagedata[6], pagedata[7],
 	pagedata[8], pagedata[9], pagedata[10], pagedata[11],
 	pagedata[12], pagedata[13], pagedata[14], pagedata[15]);
+=======
+		       pagedata[0], pagedata[1], pagedata[2], pagedata[3],
+		       pagedata[4], pagedata[5], pagedata[6], pagedata[7],
+		       pagedata[8], pagedata[9], pagedata[10], pagedata[11],
+		       pagedata[12], pagedata[13], pagedata[14], pagedata[15]);
+		Delay_us(1000);
+	}
+	ds_log("test done\nsuccess time : %d\n", count);
+	return scnprintf(
+		buf, PAGE_SIZE,
+		"Success = %d\npagedata = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+		count, pagedata[0], pagedata[1], pagedata[2], pagedata[3],
+		pagedata[4], pagedata[5], pagedata[6], pagedata[7], pagedata[8],
+		pagedata[9], pagedata[10], pagedata[11], pagedata[12],
+		pagedata[13], pagedata[14], pagedata[15]);
+}
+
+static ssize_t ds28e16_ds_pagedata_store(struct device *dev,
+					 struct device_attribute *attr,
+					 const char *buf, size_t count)
+{
+	int result;
+	unsigned char pagedata[16] = { 0x00 };
+
+	if (sscanf(buf,
+		   "%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx",
+		   &pagedata[0], &pagedata[1], &pagedata[2], &pagedata[3],
+		   &pagedata[4], &pagedata[5], &pagedata[6], &pagedata[7],
+		   &pagedata[8], &pagedata[9], &pagedata[10], &pagedata[11],
+		   &pagedata[12], &pagedata[13], &pagedata[14],
+		   &pagedata[15]) != 16)
+		return -EINVAL;
+
+	ds_dbg("new data = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+	       pagedata[0], pagedata[1], pagedata[2], pagedata[3], pagedata[4],
+	       pagedata[5], pagedata[6], pagedata[7], pagedata[8], pagedata[9],
+	       pagedata[10], pagedata[11], pagedata[12], pagedata[13],
+	       pagedata[14], pagedata[15]);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	result = DS28E16_cmd_writeMemory(pagenumber, pagedata);
 	if (result == DS_TRUE)
@@ -1388,14 +1812,24 @@ const char *buf, size_t count)
 }
 
 static ssize_t ds28e16_ds_time_status_read(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr, char *buf)
+=======
+					   struct device_attribute *attr,
+					   char *buf)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	return scnprintf(buf, PAGE_SIZE, "%d\n", attr_trytimes);
 }
 
 static ssize_t ds28e16_ds_time_store(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr,
 const char *buf, size_t count)
+=======
+				     struct device_attribute *attr,
+				     const char *buf, size_t count)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	int buf_int;
 
@@ -1410,6 +1844,7 @@ const char *buf, size_t count)
 	return count;
 }
 
+<<<<<<< HEAD
 static ssize_t ds28e16_ds_session_seed_status_read(struct device *dev,
 struct device_attribute *attr, char *buf)
 {
@@ -1441,12 +1876,52 @@ const char *buf, size_t count)
 		&session_seed[24], &session_seed[25], &session_seed[26],
 		&session_seed[27], &session_seed[28], &session_seed[29],
 		&session_seed[30], &session_seed[31]) != 32)
+=======
+static ssize_t
+ds28e16_ds_session_seed_status_read(struct device *dev,
+				    struct device_attribute *attr, char *buf)
+{
+	return scnprintf(
+		buf, PAGE_SIZE,
+		"%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n",
+		session_seed[0], session_seed[1], session_seed[2],
+		session_seed[3], session_seed[4], session_seed[5],
+		session_seed[6], session_seed[7], session_seed[8],
+		session_seed[9], session_seed[10], session_seed[11],
+		session_seed[12], session_seed[13], session_seed[14],
+		session_seed[15], session_seed[16], session_seed[17],
+		session_seed[18], session_seed[19], session_seed[20],
+		session_seed[21], session_seed[22], session_seed[23],
+		session_seed[24], session_seed[25], session_seed[26],
+		session_seed[27], session_seed[28], session_seed[29],
+		session_seed[30], session_seed[31]);
+}
+
+static ssize_t ds28e16_ds_session_seed_store(struct device *dev,
+					     struct device_attribute *attr,
+					     const char *buf, size_t count)
+{
+	if (sscanf(buf,
+		   "%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx",
+		   &session_seed[0], &session_seed[1], &session_seed[2],
+		   &session_seed[3], &session_seed[4], &session_seed[5],
+		   &session_seed[6], &session_seed[7], &session_seed[8],
+		   &session_seed[9], &session_seed[10], &session_seed[11],
+		   &session_seed[12], &session_seed[13], &session_seed[14],
+		   &session_seed[15], &session_seed[16], &session_seed[17],
+		   &session_seed[18], &session_seed[19], &session_seed[20],
+		   &session_seed[21], &session_seed[22], &session_seed[23],
+		   &session_seed[24], &session_seed[25], &session_seed[26],
+		   &session_seed[27], &session_seed[28], &session_seed[29],
+		   &session_seed[30], &session_seed[31]) != 32)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		return -EINVAL;
 
 	return count;
 }
 
 static ssize_t ds28e16_ds_challenge_status_read(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr, char *buf)
 {
 	return scnprintf(buf, PAGE_SIZE,
@@ -1475,12 +1950,47 @@ const char *buf, size_t count)
 		&challenge[24], &challenge[25], &challenge[26], &challenge[27],
 		&challenge[28], &challenge[29],
 		&challenge[30], &challenge[31]) != 32)
+=======
+						struct device_attribute *attr,
+						char *buf)
+{
+	return scnprintf(
+		buf, PAGE_SIZE,
+		"%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n",
+		challenge[0], challenge[1], challenge[2], challenge[3],
+		challenge[4], challenge[5], challenge[6], challenge[7],
+		challenge[8], challenge[9], challenge[10], challenge[11],
+		challenge[12], challenge[13], challenge[14], challenge[15],
+		challenge[16], challenge[17], challenge[18], challenge[19],
+		challenge[20], challenge[21], challenge[22], challenge[23],
+		challenge[24], challenge[25], challenge[26], challenge[27],
+		challenge[28], challenge[29], challenge[30], challenge[31]);
+}
+
+static ssize_t ds28e16_ds_challenge_store(struct device *dev,
+					  struct device_attribute *attr,
+					  const char *buf, size_t count)
+{
+	if (sscanf(buf,
+		   "%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx",
+		   &challenge[0], &challenge[1], &challenge[2], &challenge[3],
+		   &challenge[4], &challenge[5], &challenge[6], &challenge[7],
+		   &challenge[8], &challenge[9], &challenge[10], &challenge[11],
+		   &challenge[12], &challenge[13], &challenge[14],
+		   &challenge[15], &challenge[16], &challenge[17],
+		   &challenge[18], &challenge[19], &challenge[20],
+		   &challenge[21], &challenge[22], &challenge[23],
+		   &challenge[24], &challenge[25], &challenge[26],
+		   &challenge[27], &challenge[28], &challenge[29],
+		   &challenge[30], &challenge[31]) != 32)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		return -EINVAL;
 
 	return count;
 }
 
 static ssize_t ds28e16_ds_S_secret_status_read(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr, char *buf)
 {
 	return scnprintf(buf, PAGE_SIZE,
@@ -1509,20 +2019,63 @@ const char *buf, size_t count)
 		&S_secret[24], &S_secret[25], &S_secret[26], &S_secret[27],
 		&S_secret[28], &S_secret[29],
 		&S_secret[30], &S_secret[31]) != 32)
+=======
+					       struct device_attribute *attr,
+					       char *buf)
+{
+	return scnprintf(
+		buf, PAGE_SIZE,
+		"%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,\n",
+		S_secret[0], S_secret[1], S_secret[2], S_secret[3], S_secret[4],
+		S_secret[5], S_secret[6], S_secret[7], S_secret[8], S_secret[9],
+		S_secret[10], S_secret[11], S_secret[12], S_secret[13],
+		S_secret[14], S_secret[15], S_secret[16], S_secret[17],
+		S_secret[18], S_secret[19], S_secret[20], S_secret[21],
+		S_secret[22], S_secret[23], S_secret[24], S_secret[25],
+		S_secret[26], S_secret[27], S_secret[28], S_secret[29],
+		S_secret[30], S_secret[31]);
+}
+
+static ssize_t ds28e16_ds_S_secret_store(struct device *dev,
+					 struct device_attribute *attr,
+					 const char *buf, size_t count)
+{
+	if (sscanf(buf,
+		   "%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx,%2hhx",
+		   &S_secret[0], &S_secret[1], &S_secret[2], &S_secret[3],
+		   &S_secret[4], &S_secret[5], &S_secret[6], &S_secret[7],
+		   &S_secret[8], &S_secret[9], &S_secret[10], &S_secret[11],
+		   &S_secret[12], &S_secret[13], &S_secret[14], &S_secret[15],
+		   &S_secret[16], &S_secret[17], &S_secret[18], &S_secret[19],
+		   &S_secret[20], &S_secret[21], &S_secret[22], &S_secret[23],
+		   &S_secret[24], &S_secret[25], &S_secret[26], &S_secret[27],
+		   &S_secret[28], &S_secret[29], &S_secret[30],
+		   &S_secret[31]) != 32)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		return -EINVAL;
 
 	return count;
 }
 
 static ssize_t ds28e16_ds_auth_ANON_status_read(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr, char *buf)
+=======
+						struct device_attribute *attr,
+						char *buf)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	return scnprintf(buf, PAGE_SIZE, "%02x\n", auth_ANON);
 }
 
 static ssize_t ds28e16_ds_auth_ANON_store(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr,
 const char *buf, size_t count)
+=======
+					  struct device_attribute *attr,
+					  const char *buf, size_t count)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	if (sscanf(buf, "%d", &auth_ANON) != 1)
 		return -EINVAL;
@@ -1530,15 +2083,26 @@ const char *buf, size_t count)
 	return count;
 }
 
+<<<<<<< HEAD
 static ssize_t ds28e16_ds_auth_BDCONST_status_read(struct device *dev,
 struct device_attribute *attr, char *buf)
+=======
+static ssize_t
+ds28e16_ds_auth_BDCONST_status_read(struct device *dev,
+				    struct device_attribute *attr, char *buf)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	return scnprintf(buf, PAGE_SIZE, "%02x\n", auth_BDCONST);
 }
 
 static ssize_t ds28e16_ds_auth_BDCONST_store(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr,
 const char *buf, size_t count)
+=======
+					     struct device_attribute *attr,
+					     const char *buf, size_t count)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	if (sscanf(buf, "%d", &auth_BDCONST) != 1)
 		return -EINVAL;
@@ -1547,12 +2111,22 @@ const char *buf, size_t count)
 }
 
 static ssize_t ds28e16_ds_readstatus_status_read(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr, char *buf)
 {
 	int result;
 	unsigned char status[16] = {0x00};
 	int i = 0; int count = 0;
 
+=======
+						 struct device_attribute *attr,
+						 char *buf)
+{
+	int result;
+	unsigned char status[16] = { 0x00 };
+	int i = 0;
+	int count = 0;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	for (i = 0; i < attr_trytimes; i++) {
 		result = DS28E16_cmd_readStatus(status);
@@ -1564,6 +2138,7 @@ struct device_attribute *attr, char *buf)
 			ds_log("DS28E16_cmd_readStatus fail!\n");
 		}
 		ds_dbg("Status = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+<<<<<<< HEAD
 		status[0], status[1], status[2], status[3],
 		status[4], status[5], status[6], status[7],
 		status[8], status[9], status[10], status[11],
@@ -1623,25 +2198,91 @@ static struct attribute *ds_attributes[] = {
 	&dev_attr_ds_auth_BDCONST.attr,
 	&dev_attr_ds_Auth_Result.attr,
 	NULL,
+=======
+		       status[0], status[1], status[2], status[3], status[4],
+		       status[5], status[6], status[7], status[8], status[9],
+		       status[10], status[11], status[12], status[13],
+		       status[14], status[15]);
+		Delay_us(1000);
+	}
+	ds_log("test done\nsuccess time : %d\n", count);
+	return scnprintf(
+		buf, PAGE_SIZE,
+		"Success = %d\nStatus = %02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x,%02x\n",
+		count, status[0], status[1], status[2], status[3], status[4],
+		status[5], status[6], status[7], status[8], status[9],
+		status[10], status[11], status[12], status[13], status[14],
+		status[15]);
+}
+
+static DEVICE_ATTR(ds_readstatus, S_IRUGO, ds28e16_ds_readstatus_status_read,
+		   NULL);
+static DEVICE_ATTR(ds_romid, S_IRUGO, ds28e16_ds_romid_status_read, NULL);
+static DEVICE_ATTR(ds_pagenumber, S_IRUGO | S_IWUSR | S_IWGRP,
+		   ds28e16_ds_pagenumber_status_read,
+		   ds28e16_ds_pagenumber_store);
+static DEVICE_ATTR(ds_pagedata, S_IRUGO | S_IWUSR | S_IWGRP,
+		   ds28e16_ds_pagedata_status_read, ds28e16_ds_pagedata_store);
+static DEVICE_ATTR(ds_time, S_IRUGO | S_IWUSR | S_IWGRP,
+		   ds28e16_ds_time_status_read, ds28e16_ds_time_store);
+static DEVICE_ATTR(ds_session_seed, S_IRUGO | S_IWUSR | S_IWGRP,
+		   ds28e16_ds_session_seed_status_read,
+		   ds28e16_ds_session_seed_store);
+static DEVICE_ATTR(ds_challenge, S_IRUGO | S_IWUSR | S_IWGRP,
+		   ds28e16_ds_challenge_status_read,
+		   ds28e16_ds_challenge_store);
+static DEVICE_ATTR(ds_S_secret, S_IRUGO | S_IWUSR | S_IWGRP,
+		   ds28e16_ds_S_secret_status_read, ds28e16_ds_S_secret_store);
+static DEVICE_ATTR(ds_auth_ANON, S_IRUGO | S_IWUSR | S_IWGRP,
+		   ds28e16_ds_auth_ANON_status_read,
+		   ds28e16_ds_auth_ANON_store);
+static DEVICE_ATTR(ds_auth_BDCONST, S_IRUGO | S_IWUSR | S_IWGRP,
+		   ds28e16_ds_auth_BDCONST_status_read,
+		   ds28e16_ds_auth_BDCONST_store);
+static DEVICE_ATTR(ds_Auth_Result, S_IRUGO, ds28e16_ds_Auth_Result_status_read,
+		   NULL);
+
+static struct attribute *ds_attributes[] = {
+	&dev_attr_ds_readstatus.attr,  &dev_attr_ds_romid.attr,
+	&dev_attr_ds_pagenumber.attr,  &dev_attr_ds_pagedata.attr,
+	&dev_attr_ds_time.attr,	       &dev_attr_ds_session_seed.attr,
+	&dev_attr_ds_challenge.attr,   &dev_attr_ds_S_secret.attr,
+	&dev_attr_ds_auth_ANON.attr,   &dev_attr_ds_auth_BDCONST.attr,
+	&dev_attr_ds_Auth_Result.attr, NULL,
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 };
 
 static const struct attribute_group ds_attr_group = {
 	.attrs = ds_attributes,
 };
 
+<<<<<<< HEAD
 #define VERIFY_PERIOD_S		(5*1000)
 #define VERIFY_MAX_COUNT	5
+=======
+#define VERIFY_PERIOD_S (5 * 1000)
+#define VERIFY_MAX_COUNT 5
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 static void battery_verify(struct work_struct *work)
 {
 	int result, i;
 	static int count;
 	struct ds28e16_data *data = container_of(work, struct ds28e16_data,
+<<<<<<< HEAD
 							battery_verify_work.work);
+=======
+						 battery_verify_work.work);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	ds_log("%s enter\n", __func__);
 	for (i = 0; i < GET_VERIFY_RETRY; i++) {
 		result = AuthenticateDS28E16(auth_ANON, auth_BDCONST, 0,
+<<<<<<< HEAD
 			pagenumber, challenge, session_seed, S_secret);
+=======
+					     pagenumber, challenge,
+					     session_seed, S_secret);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (result == DS_TRUE)
 			break;
 	}
@@ -1652,12 +2293,24 @@ static void battery_verify(struct work_struct *work)
 	} else {
 		data->batt_verified = 0;
 		if (count < VERIFY_MAX_COUNT) {
+<<<<<<< HEAD
 			schedule_delayed_work(&data->battery_verify_work,
 						msecs_to_jiffies(VERIFY_PERIOD_S));
 			ds_info("%s battery verify failed times[%d]", __func__, count);
 			count++;
 		} else {
 			ds_info("%s battery verify failed[%d]", __func__, result);
+=======
+			schedule_delayed_work(
+				&data->battery_verify_work,
+				msecs_to_jiffies(VERIFY_PERIOD_S));
+			ds_info("%s battery verify failed times[%d]", __func__,
+				count);
+			count++;
+		} else {
+			ds_info("%s battery verify failed[%d]", __func__,
+				result);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		}
 	}
 }
@@ -1676,9 +2329,14 @@ static int ds28e16_probe(struct platform_device *pdev)
 		return -ENODEV;
 
 	if (pdev->dev.of_node) {
+<<<<<<< HEAD
 		ds28e16_data = devm_kzalloc(&pdev->dev,
 			sizeof(struct ds28e16_data),
 			GFP_KERNEL);
+=======
+		ds28e16_data = devm_kzalloc(
+			&pdev->dev, sizeof(struct ds28e16_data), GFP_KERNEL);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (!ds28e16_data) {
 			ds_err("Failed to allocate memory\n");
 			return -ENOMEM;
@@ -1702,7 +2360,12 @@ static int ds28e16_probe(struct platform_device *pdev)
 	ds28e16_data->pdev = pdev;
 	platform_set_drvdata(pdev, ds28e16_data);
 	INIT_DELAYED_WORK(&ds28e16_data->battery_verify_work, battery_verify);
+<<<<<<< HEAD
 	schedule_delayed_work(&ds28e16_data->battery_verify_work, msecs_to_jiffies(0));
+=======
+	schedule_delayed_work(&ds28e16_data->battery_verify_work,
+			      msecs_to_jiffies(0));
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	retval = verify_psy_register(ds28e16_data);
 	if (retval) {
 		ds_err("Failed to verify_psy_register, err:%d\n", retval);
@@ -1736,7 +2399,11 @@ static int ds28e16_remove(struct platform_device *pdev)
 }
 
 static long ds28e16_dev_ioctl(struct file *file, unsigned int cmd,
+<<<<<<< HEAD
 						unsigned long arg)
+=======
+			      unsigned long arg)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	ds_log("%d, cmd: 0x%x\n", __LINE__, cmd);
 	return 0;
@@ -1752,6 +2419,7 @@ static int ds28e16_dev_release(struct inode *inode, struct file *file)
 }
 
 static const struct file_operations ds28e16_dev_fops = {
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
 	.open		= ds28e16_dev_open,
 	.unlocked_ioctl = ds28e16_dev_ioctl,
@@ -1760,6 +2428,16 @@ static const struct file_operations ds28e16_dev_fops = {
 
 static const struct of_device_id ds28e16_dt_match[] = {
 	{.compatible = "maxim,ds28e16"},
+=======
+	.owner = THIS_MODULE,
+	.open = ds28e16_dev_open,
+	.unlocked_ioctl = ds28e16_dev_ioctl,
+	.release = ds28e16_dev_release,
+};
+
+static const struct of_device_id ds28e16_dt_match[] = {
+	{ .compatible = "maxim,ds28e16" },
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	{},
 };
 

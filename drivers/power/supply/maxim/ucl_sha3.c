@@ -65,6 +65,7 @@ SOFTWARE.
 #include "ucl_sha3.h"
 
 #define N_ROUNDS 24 // the specialization for  keccak-f from keccak-p
+<<<<<<< HEAD
 #define ROTL64(x, y) (((x) << (y)) | ((x) >> ((sizeof(unsigned long long)*8) - (y))))
 
 const unsigned long long kcf_rc[24] = {
@@ -78,6 +79,27 @@ const unsigned long long kcf_rc[24] = {
 									0x8000000000008080, 0x0000000080000001, 0x8000000080008008};
 static const unsigned char kcf_rho[24] = {1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 2, 14, 27, 41, 56, 8, 25, 43, 62, 18, 39, 61, 20, 44};
 static const unsigned char kcf_pilane[24] = {10, 7, 11, 17, 18, 3, 5, 16, 8, 21, 24, 4, 15, 23, 19, 13, 12, 2, 20, 14, 22, 9, 6, 1};
+=======
+#define ROTL64(x, y)                                                           \
+	(((x) << (y)) | ((x) >> ((sizeof(unsigned long long) * 8) - (y))))
+
+const unsigned long long kcf_rc[24] = {
+	0x0000000000000001, 0x0000000000008082, 0x800000000000808a,
+	0x8000000080008000, 0x000000000000808b, 0x0000000080000001,
+	0x8000000080008081, 0x8000000000008009, 0x000000000000008a,
+	0x0000000000000088, 0x0000000080008009, 0x000000008000000a,
+	0x000000008000808b, 0x800000000000008b, 0x8000000000008089,
+	0x8000000000008003, 0x8000000000008002, 0x8000000000000080,
+	0x000000000000800a, 0x800000008000000a, 0x8000000080008081,
+	0x8000000000008080, 0x0000000080000001, 0x8000000080008008
+};
+static const unsigned char kcf_rho[24] = { 1,  3,  6,  10, 15, 21, 28, 36,
+					   45, 55, 2,  14, 27, 41, 56, 8,
+					   25, 43, 62, 18, 39, 61, 20, 44 };
+static const unsigned char kcf_pilane[24] = { 10, 7,  11, 17, 18, 3,  5,  16,
+					      8,  21, 24, 4,  15, 23, 19, 13,
+					      12, 2,  20, 14, 22, 9,  6,  1 };
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 // generally called after SHA3_SPONGE_WORDS-ctx->capacityWords words
 // are XORed into the state s
@@ -90,10 +112,19 @@ static void kcf(unsigned long long state[25])
 	for (round = 0; round < N_ROUNDS; round++) {
 		// Theta
 		for (i = 0; i < 5; i++)
+<<<<<<< HEAD
 			c[i] = state[i] ^ state[i + 5] ^ state[i + 10] ^ state[i + 15] ^ state[i + 20];
 
 		for (i = 0; i < 5; i++) {
 			t = c[(i + 4) % 5] ^ (unsigned long long)ROTL64(c[(i + 1) % 5], 1);
+=======
+			c[i] = state[i] ^ state[i + 5] ^ state[i + 10] ^
+			       state[i + 15] ^ state[i + 20];
+
+		for (i = 0; i < 5; i++) {
+			t = c[(i + 4) % 5] ^
+			    (unsigned long long)ROTL64(c[(i + 1) % 5], 1);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			for (j = 0; j < 25; j += 5)
 				state[j + i] ^= t;
 		}
@@ -112,7 +143,12 @@ static void kcf(unsigned long long state[25])
 			for (i = 0; i < 5; i++)
 				c[i] = state[j + i];
 			for (i = 0; i < 5; i++)
+<<<<<<< HEAD
 				state[j + i] ^= (~c[(i + 1) % 5]) & c[(i + 2) % 5];
+=======
+				state[j + i] ^=
+					(~c[(i + 1) % 5]) & c[(i + 2) % 5];
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		}
 		// Iota
 		state[0] ^= kcf_rc[round];
@@ -137,7 +173,11 @@ int ucl_sha3_224_init(ucl_sha3_ctx_t *ctx)
 	return UCL_OK;
 }
 
+<<<<<<< HEAD
 int  ucl_sha3_256_init(ucl_sha3_ctx_t *ctx)
+=======
+int ucl_sha3_256_init(ucl_sha3_ctx_t *ctx)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	if (ctx == NULL)
 		return UCL_INVALID_INPUT;
@@ -151,7 +191,11 @@ int ucl_shake256_init(ucl_sha3_ctx_t *ctx)
 	return ucl_sha3_256_init(ctx);
 }
 
+<<<<<<< HEAD
 int  ucl_sha3_384_init(ucl_sha3_ctx_t *ctx)
+=======
+int ucl_sha3_384_init(ucl_sha3_ctx_t *ctx)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	if (ctx == NULL)
 		return UCL_INVALID_INPUT;
@@ -160,7 +204,11 @@ int  ucl_sha3_384_init(ucl_sha3_ctx_t *ctx)
 	return UCL_OK;
 }
 
+<<<<<<< HEAD
 int  ucl_sha3_512_init(ucl_sha3_ctx_t *ctx)
+=======
+int ucl_sha3_512_init(ucl_sha3_ctx_t *ctx)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	if (ctx == NULL)
 		return UCL_INVALID_INPUT;
@@ -169,7 +217,12 @@ int  ucl_sha3_512_init(ucl_sha3_ctx_t *ctx)
 	return UCL_OK;
 }
 
+<<<<<<< HEAD
 int ucl_sha3_core(ucl_sha3_ctx_t *ctx, const unsigned char *bufIn, unsigned int len)
+=======
+int ucl_sha3_core(ucl_sha3_ctx_t *ctx, const unsigned char *bufIn,
+		  unsigned int len)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	unsigned int old_tail = (8 - ctx->byteIndex) & 7;
 	size_t words;
@@ -183,18 +236,33 @@ int ucl_sha3_core(ucl_sha3_ctx_t *ctx, const unsigned char *bufIn, unsigned int 
 		return UCL_INVALID_INPUT;
 	if (len < old_tail) {
 		while (len--)
+<<<<<<< HEAD
 			ctx->saved |= (unsigned long long) (*(buf++)) << ((ctx->byteIndex++) * 8);
+=======
+			ctx->saved |= (unsigned long long)(*(buf++))
+				      << ((ctx->byteIndex++) * 8);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		return UCL_OK;
 	}
 
 	if (old_tail) {
 		len -= old_tail;
 		while (old_tail--)
+<<<<<<< HEAD
 			ctx->saved |= (unsigned long long) (*(buf++)) << ((ctx->byteIndex++) * 8);
 		ctx->s[ctx->wordIndex] ^= ctx->saved;
 		ctx->byteIndex = 0;
 		ctx->saved = 0;
 		if (++ctx->wordIndex == ((int)SHA3_SPONGE_WORDS - ctx->capacityWords)) {
+=======
+			ctx->saved |= (unsigned long long)(*(buf++))
+				      << ((ctx->byteIndex++) * 8);
+		ctx->s[ctx->wordIndex] ^= ctx->saved;
+		ctx->byteIndex = 0;
+		ctx->saved = 0;
+		if (++ctx->wordIndex ==
+		    ((int)SHA3_SPONGE_WORDS - ctx->capacityWords)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			kcf(ctx->s);
 			ctx->wordIndex = 0;
 		}
@@ -203,6 +271,7 @@ int ucl_sha3_core(ucl_sha3_ctx_t *ctx, const unsigned char *bufIn, unsigned int 
 	words = len / sizeof(unsigned long long);
 	tail = (int)(len - words * sizeof(unsigned long long));
 	for (i = 0; i < words; i++, buf += sizeof(unsigned long long)) {
+<<<<<<< HEAD
 		const unsigned long long t = (unsigned long long) (buf[0]) |
 		((unsigned long long) (buf[1]) << 8 * 1) |
 		((unsigned long long) (buf[2]) << 8 * 2) |
@@ -214,13 +283,33 @@ int ucl_sha3_core(ucl_sha3_ctx_t *ctx, const unsigned char *bufIn, unsigned int 
 		ctx->s[ctx->wordIndex] ^= t;
 
 		if (++ctx->wordIndex == ((int)SHA3_SPONGE_WORDS - ctx->capacityWords)) {
+=======
+		const unsigned long long t =
+			(unsigned long long)(buf[0]) |
+			((unsigned long long)(buf[1]) << 8 * 1) |
+			((unsigned long long)(buf[2]) << 8 * 2) |
+			((unsigned long long)(buf[3]) << 8 * 3) |
+			((unsigned long long)(buf[4]) << 8 * 4) |
+			((unsigned long long)(buf[5]) << 8 * 5) |
+			((unsigned long long)(buf[6]) << 8 * 6) |
+			((unsigned long long)(buf[7]) << 8 * 7);
+		ctx->s[ctx->wordIndex] ^= t;
+
+		if (++ctx->wordIndex ==
+		    ((int)SHA3_SPONGE_WORDS - ctx->capacityWords)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			kcf(ctx->s);
 			ctx->wordIndex = 0;
 		}
 	}
 
 	while (tail--)
+<<<<<<< HEAD
 		ctx->saved |= (unsigned long long) (*(buf++)) << ((ctx->byteIndex++) * 8);
+=======
+		ctx->saved |= (unsigned long long)(*(buf++))
+			      << ((ctx->byteIndex++) * 8);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	return UCL_OK;
 }
@@ -230,8 +319,17 @@ int ucl_sha3_finish(unsigned char *digest, ucl_sha3_ctx_t *ctx)
 	int i;
 
 	// SHA3 version
+<<<<<<< HEAD
 	ctx->s[ctx->wordIndex] ^= (ctx->saved ^ ((unsigned long long) ((unsigned long long) (0x02 | (1 << 2)) << ((ctx->byteIndex) * 8))));
 	ctx->s[(int)SHA3_SPONGE_WORDS - ctx->capacityWords - 1] ^= (unsigned long long)0x8000000000000000UL;
+=======
+	ctx->s[ctx->wordIndex] ^=
+		(ctx->saved ^
+		 ((unsigned long long)((unsigned long long)(0x02 | (1 << 2))
+				       << ((ctx->byteIndex) * 8))));
+	ctx->s[(int)SHA3_SPONGE_WORDS - ctx->capacityWords - 1] ^=
+		(unsigned long long)0x8000000000000000UL;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	kcf(ctx->s);
 
 	if (digest == NULL)
@@ -240,6 +338,7 @@ int ucl_sha3_finish(unsigned char *digest, ucl_sha3_ctx_t *ctx)
 		return UCL_INVALID_INPUT;
 
 	for (i = 0; i < (int)SHA3_SPONGE_WORDS; i++) {
+<<<<<<< HEAD
 		const unsigned int t1 = (unsigned int) ctx->s[i];
 		const unsigned int t2 = (unsigned int) ((ctx->s[i] >> 16) >> 16);
 
@@ -251,6 +350,19 @@ int ucl_sha3_finish(unsigned char *digest, ucl_sha3_ctx_t *ctx)
 		ctx->sb[i * 8 + 5] = (unsigned char) (t2 >> 8);
 		ctx->sb[i * 8 + 6] = (unsigned char) (t2 >> 16);
 		ctx->sb[i * 8 + 7] = (unsigned char) (t2 >> 24);
+=======
+		const unsigned int t1 = (unsigned int)ctx->s[i];
+		const unsigned int t2 = (unsigned int)((ctx->s[i] >> 16) >> 16);
+
+		ctx->sb[i * 8 + 0] = (unsigned char)(t1);
+		ctx->sb[i * 8 + 1] = (unsigned char)(t1 >> 8);
+		ctx->sb[i * 8 + 2] = (unsigned char)(t1 >> 16);
+		ctx->sb[i * 8 + 3] = (unsigned char)(t1 >> 24);
+		ctx->sb[i * 8 + 4] = (unsigned char)(t2);
+		ctx->sb[i * 8 + 5] = (unsigned char)(t2 >> 8);
+		ctx->sb[i * 8 + 6] = (unsigned char)(t2 >> 16);
+		ctx->sb[i * 8 + 7] = (unsigned char)(t2 >> 24);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 
 	for (i = 0; i < (int)SHA3_SPONGE_WORDS * 8; i++)
@@ -268,6 +380,7 @@ int ucl_shake_finish(unsigned char *digest, ucl_sha3_ctx_t *ctx)
 	if (digest == NULL)
 		return UCL_INVALID_OUTPUT;
 
+<<<<<<< HEAD
 	ctx->s[ctx->wordIndex] ^= (ctx->saved ^ ((unsigned long long) (0x1F) << ((ctx->byteIndex) * 8)));
 	i = (int)SHA3_SPONGE_WORDS - ctx->capacityWords - 1;
 	ctx->s[(int)SHA3_SPONGE_WORDS - ctx->capacityWords - 1] ^= (unsigned long long)(0x8000000000000000UL);
@@ -285,6 +398,27 @@ int ucl_shake_finish(unsigned char *digest, ucl_sha3_ctx_t *ctx)
 		ctx->sb[i * 8 + 5] = (unsigned char) (t2 >> 8);
 		ctx->sb[i * 8 + 6] = (unsigned char) (t2 >> 16);
 		ctx->sb[i * 8 + 7] = (unsigned char) (t2 >> 24);
+=======
+	ctx->s[ctx->wordIndex] ^= (ctx->saved ^ ((unsigned long long)(0x1F)
+						 << ((ctx->byteIndex) * 8)));
+	i = (int)SHA3_SPONGE_WORDS - ctx->capacityWords - 1;
+	ctx->s[(int)SHA3_SPONGE_WORDS - ctx->capacityWords - 1] ^=
+		(unsigned long long)(0x8000000000000000UL);
+	kcf(ctx->s);
+
+	for (i = 0; i < (int)SHA3_SPONGE_WORDS; i++) {
+		const unsigned int t1 = (unsigned int)ctx->s[i];
+		const unsigned int t2 = (unsigned int)((ctx->s[i] >> 16) >> 16);
+
+		ctx->sb[i * 8 + 0] = (unsigned char)(t1);
+		ctx->sb[i * 8 + 1] = (unsigned char)(t1 >> 8);
+		ctx->sb[i * 8 + 2] = (unsigned char)(t1 >> 16);
+		ctx->sb[i * 8 + 3] = (unsigned char)(t1 >> 24);
+		ctx->sb[i * 8 + 4] = (unsigned char)(t2);
+		ctx->sb[i * 8 + 5] = (unsigned char)(t2 >> 8);
+		ctx->sb[i * 8 + 6] = (unsigned char)(t2 >> 16);
+		ctx->sb[i * 8 + 7] = (unsigned char)(t2 >> 24);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 
 	for (i = 0; i < (int)SHA3_SPONGE_WORDS * 8; i++)
@@ -302,11 +436,19 @@ int ucl_sha3_224(unsigned char *digest, unsigned char *msg, unsigned int msgLen)
 	if (digest == NULL)
 		return UCL_INVALID_OUTPUT;
 	if (ucl_sha3_224_init(&ctx) != UCL_OK)
+<<<<<<< HEAD
 		return(UCL_ERROR);
 	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
 		return(UCL_ERROR);
 	if (ucl_sha3_finish(digest, &ctx) != UCL_OK)
 		return(UCL_ERROR);
+=======
+		return (UCL_ERROR);
+	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
+		return (UCL_ERROR);
+	if (ucl_sha3_finish(digest, &ctx) != UCL_OK)
+		return (UCL_ERROR);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	return UCL_OK;
 }
@@ -321,11 +463,19 @@ int ucl_sha3_256(unsigned char *digest, unsigned char *msg, unsigned int msgLen)
 		return UCL_INVALID_OUTPUT;
 
 	if (ucl_sha3_256_init(&ctx) != UCL_OK)
+<<<<<<< HEAD
 		return(UCL_ERROR);
 	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
 		return(UCL_ERROR);
 	if (ucl_sha3_finish(digest, &ctx) != UCL_OK)
 		return(UCL_ERROR);
+=======
+		return (UCL_ERROR);
+	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
+		return (UCL_ERROR);
+	if (ucl_sha3_finish(digest, &ctx) != UCL_OK)
+		return (UCL_ERROR);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	return UCL_OK;
 }
@@ -340,11 +490,19 @@ int ucl_shake128(unsigned char *digest, unsigned char *msg, unsigned int msgLen)
 		return UCL_INVALID_OUTPUT;
 
 	if (ucl_shake128_init(&ctx) != UCL_OK)
+<<<<<<< HEAD
 		return(UCL_ERROR);
 	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
 		return(UCL_ERROR);
 	if (ucl_shake_finish(digest, &ctx) != UCL_OK)
 		return(UCL_ERROR);
+=======
+		return (UCL_ERROR);
+	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
+		return (UCL_ERROR);
+	if (ucl_shake_finish(digest, &ctx) != UCL_OK)
+		return (UCL_ERROR);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	return UCL_OK;
 }
@@ -359,11 +517,19 @@ int ucl_sha3_384(unsigned char *digest, unsigned char *msg, unsigned int msgLen)
 		return UCL_INVALID_OUTPUT;
 
 	if (ucl_sha3_384_init(&ctx) != UCL_OK)
+<<<<<<< HEAD
 		return(UCL_ERROR);
 	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
 		return(UCL_ERROR);
 	if (ucl_sha3_finish(digest, &ctx) != UCL_OK)
 		return(UCL_ERROR);
+=======
+		return (UCL_ERROR);
+	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
+		return (UCL_ERROR);
+	if (ucl_sha3_finish(digest, &ctx) != UCL_OK)
+		return (UCL_ERROR);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	return UCL_OK;
 }
@@ -378,11 +544,19 @@ int ucl_sha3_512(unsigned char *digest, unsigned char *msg, unsigned int msgLen)
 		return UCL_INVALID_OUTPUT;
 
 	if (UCL_OK != ucl_sha3_512_init(&ctx))
+<<<<<<< HEAD
 		return(UCL_ERROR);
 	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
 		return(UCL_ERROR);
 	if (ucl_sha3_finish(digest, &ctx) != UCL_OK)
 		return(UCL_ERROR);
+=======
+		return (UCL_ERROR);
+	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
+		return (UCL_ERROR);
+	if (ucl_sha3_finish(digest, &ctx) != UCL_OK)
+		return (UCL_ERROR);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	return UCL_OK;
 }
@@ -396,6 +570,7 @@ int ucl_shake256(unsigned char *digest, unsigned char *msg, unsigned int msgLen)
 		return UCL_INVALID_OUTPUT;
 
 	if (ucl_shake256_init(&ctx) != UCL_OK)
+<<<<<<< HEAD
 		return(UCL_ERROR);
 	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
 		return(UCL_ERROR);
@@ -405,3 +580,14 @@ int ucl_shake256(unsigned char *digest, unsigned char *msg, unsigned int msgLen)
 	return UCL_OK;
 }
 #endif//SHA3
+=======
+		return (UCL_ERROR);
+	if (ucl_sha3_core(&ctx, msg, msgLen) != UCL_OK)
+		return (UCL_ERROR);
+	if (ucl_shake_finish(digest, &ctx) != UCL_OK)
+		return (UCL_ERROR);
+
+	return UCL_OK;
+}
+#endif //SHA3
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)

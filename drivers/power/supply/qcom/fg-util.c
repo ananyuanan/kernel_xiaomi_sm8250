@@ -910,8 +910,11 @@ int fg_get_msoc(struct fg_dev *fg, int *msoc)
 		return rc;
 
 	if (fg->param.smooth_batt_flag) {
+<<<<<<< HEAD
 //		pr_info("===raw_msoc:%d\n", raw_msoc);
 
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (raw_msoc >= 255) {
 			*msoc = FULL_CAPACITY;
 		} else if (raw_msoc >= 252 && !optimized_soc_flag && fg->report_full) {

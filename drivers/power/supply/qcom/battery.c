@@ -1275,7 +1275,10 @@ static int pl_fv_vote_callback(struct votable *votable, void *data,
 				POWER_SUPPLY_PROP_WIRELESS_POWER_GOOD_EN,
 				&pval);
 				if (pval.intval) {
+<<<<<<< HEAD
 					pr_err("wireless re-triggering charging\n");
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 					rc = power_supply_set_property(chip->batt_psy,
 						POWER_SUPPLY_PROP_FORCE_RECHARGE,
 						&pval);

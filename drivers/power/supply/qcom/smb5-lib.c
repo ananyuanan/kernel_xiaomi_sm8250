@@ -4470,10 +4470,15 @@ int smblib_disable_hw_jeita(struct smb_charger *chg, bool disable)
 	/*
 	 * Disable h/w base JEITA compensation if s/w JEITA is enabled
 	 */
+<<<<<<< HEAD
 	 /*J1/K81 use ti gauge disable all hard jeita, J2 use qcom default jeita */
 #if (defined CONFIG_FUEL_GAUGE_BQ27Z561) || (defined CONFIG_DUAL_FUEL_GAUGE_BQ27Z561)
 	mask = 0xFF;
 	pr_info("should disable hw jeita");
+=======
+#if (defined CONFIG_FUEL_GAUGE_BQ27Z561) || (defined CONFIG_DUAL_FUEL_GAUGE_BQ27Z561)
+	mask = 0xFF;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 #else
 	mask = JEITA_EN_COLD_SL_FCV_BIT
 		| JEITA_EN_HOT_SL_FCV_BIT
@@ -6920,7 +6925,10 @@ int smblib_set_prop_typec_boost_otg_disable(struct smb_charger *chg,
 	return rc;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 int smblib_set_prop_typec_select_rp(struct smb_charger *chg,
 				    const union power_supply_propval *val)
 {
@@ -8288,6 +8296,25 @@ void smblib_usb_plugin_hard_reset_locked(struct smb_charger *chg)
 		if (chg->fcc_stepper_enable)
 			vote(chg->fcc_votable, FCC_STEPPER_VOTER,
 							true, 1500000);
+<<<<<<< HEAD
+=======
+
+		/* Check whether charge pump trigger reset after plug out */
+		if (!chg->cp_psy)
+			chg->cp_psy = power_supply_get_by_name("bq2597x-master");
+		if (!chg->cp_sec_psy)
+			chg->cp_sec_psy = power_supply_get_by_name("bq2597x-slave");
+		if (chg->cp_psy)
+			power_supply_get_property(chg->cp_psy,
+					POWER_SUPPLY_PROP_TI_RESET_CHECK, &val);
+		if (chg->cp_sec_psy)
+			power_supply_get_property(chg->cp_sec_psy,
+					POWER_SUPPLY_PROP_TI_RESET_CHECK, &val);
+
+		/* clear chg_awake wakeup source when charger is absent */
+		vote(chg->awake_votable, CHG_AWAKE_VOTER, false, 0);
+	}
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 		/* Check whether charge pump trigger reset after plug out */
 		if (!chg->cp_psy)
@@ -8504,7 +8531,11 @@ void smblib_usb_plugin_locked(struct smb_charger *chg)
 						!chg->vbus_rising, 0);
 
 	power_supply_changed(chg->usb_psy);
+<<<<<<< HEAD
 	smblib_dbg(chg, PR_OEM, "IRQ: usbin-plugin %s\n",
+=======
+	smblib_dbg(chg, PR_INTERRUPT, "IRQ: usbin-plugin %s\n",
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 					chg->vbus_rising ? "attached" : "detached");
 }
 
@@ -10110,6 +10141,8 @@ irqreturn_t typec_attach_detach_irq_handler(int irq, void *data)
 		if (chg->lpd_stage == LPD_STAGE_FLOAT_CANCEL)
 			schedule_delayed_work(&chg->lpd_detach_work,
 					msecs_to_jiffies(1000));
+<<<<<<< HEAD
+=======
 	}
 
 	rc = smblib_masked_write(chg, USB_CMD_PULLDOWN_REG,
@@ -10122,6 +10155,373 @@ irqreturn_t typec_attach_detach_irq_handler(int irq, void *data)
 	power_supply_changed(chg->usb_psy);
 
 	return IRQ_HANDLED;
+}
+
+/*add for wireless reverse charge to disable dc*/
+int smblib_set_sw_disable_dc_en(struct smb_charger *chg,
+				const union power_supply_propval *val)
+{
+	int rc = 0;
+
+	if (val->intval) {
+		smblib_dbg(chg, PR_OEM, "disable dc en by sw\n");
+		/* step1: enter dc suspend */
+		rc = vote(chg->dc_suspend_votable, SW_DISABLE_DC_VOTER,
+			true, 0);
+
+		/* step2: force dcin_en low */
+		rc = smblib_masked_write(chg, DCIN_CMD_IL_REG,
+						 DCIN_EN_OVERRIDE_BIT | DCIN_EN_BIT,
+						 DCIN_EN_OVERRIDE_BIT);
+		if (rc < 0) {
+			dev_err(chg->dev, "Couldn't configure dc_en override rc=%d\n", rc);
+			return rc;
+		}
+
+		/* step3: enable pull-down on dcin_pon and mid_chg */
+		rc = smblib_masked_write(chg, DCIN_CMD_PULLDOWN_REG,
+						 DCIN_PULLDOWN_EN_BIT | DCIN_MID_PULLDOWN_BIT,
+						 DCIN_PULLDOWN_EN_BIT | DCIN_MID_PULLDOWN_BIT);
+		if (rc < 0) {
+			dev_err(chg->dev, "Couldn't enable dcin_pulldown rc=%d\n", rc);
+			return rc;
+		}
+		/* wait 10ms to pull mid_chg lower than Vsys+Vrevi */
+		msleep(10);
+
+		/* step4: exit dc suspend */
+		rc = vote(chg->dc_suspend_votable, SW_DISABLE_DC_VOTER,
+			false, 0);
+	} else {
+		smblib_dbg(chg, PR_OEM, "enable dc en by sw\n");
+		/* step1: enter dc suspend */
+		rc = vote(chg->dc_suspend_votable, SW_DISABLE_DC_VOTER,
+			true, 0);
+
+		/* step2: force dcin_en low */
+		rc = smblib_masked_write(chg, DCIN_CMD_IL_REG,
+						 DCIN_EN_OVERRIDE_BIT, 0);
+		if (rc < 0) {
+			dev_err(chg->dev, "Couldn't configure dc_en override rc=%d\n", rc);
+			return rc;
+		}
+
+		/* step3: enable pull-down on dcin_pon and mid_chg */
+		rc = smblib_masked_write(chg, DCIN_CMD_PULLDOWN_REG,
+						 DCIN_PULLDOWN_EN_BIT | DCIN_MID_PULLDOWN_BIT, 0);
+		if (rc < 0) {
+			dev_err(chg->dev, "Couldn't disable dcin_pulldown rc=%d\n", rc);
+			return rc;
+		}
+		/* wait 10ms to pull mid_chg lower than Vsys+Vrevi */
+		msleep(10);
+		/* step4: exit dc suspend */
+		rc = vote(chg->dc_suspend_votable, SW_DISABLE_DC_VOTER,
+			false, 0);
+	}
+
+	return 0;
+}
+
+static int smblib_set_dc_pach_safe_when_power_good_enable(struct smb_charger *chg)
+{
+
+	int rc = 0;
+
+	/* step1: force dcin_en low */
+	rc = smblib_masked_write(chg, DCIN_CMD_IL_REG,
+					DCIN_EN_OVERRIDE_BIT | DCIN_EN_BIT,
+					DCIN_EN_OVERRIDE_BIT);
+	if (rc < 0) {
+			dev_err(chg->dev, "Couldn't configure dc_en override rc=%d\n", rc);
+			return rc;
+	}
+
+	/* step2: enable pull-down on dcin_pon and mid_chg */
+	rc = smblib_masked_write(chg, DCIN_CMD_PULLDOWN_REG,
+					DCIN_PULLDOWN_EN_BIT | DCIN_MID_PULLDOWN_BIT,
+					DCIN_PULLDOWN_EN_BIT | DCIN_MID_PULLDOWN_BIT);
+	if (rc < 0) {
+		dev_err(chg->dev, "Couldn't enable dcin_pulldown rc=%d\n", rc);
+		return rc;
+	}
+	/* wait 10ms to pull mid_chg lower than Vsys+Vrevi */
+	msleep(10);
+
+	/* step3: disable pull-down on dcin_pon and mid_chg */
+	rc = smblib_masked_write(chg, DCIN_CMD_PULLDOWN_REG,
+						 DCIN_PULLDOWN_EN_BIT | DCIN_MID_PULLDOWN_BIT,
+						 0);
+	if (rc < 0) {
+		dev_err(chg->dev, "Couldn't disable dcin_pulldown rc=%d\n", rc);
+		return rc;
+	}
+
+	/* step4: remove dcin_en low */
+	rc = smblib_masked_write(chg, DCIN_CMD_IL_REG,
+						 DCIN_EN_OVERRIDE_BIT | DCIN_EN_BIT,
+						 0);
+	if (rc < 0) {
+		dev_err(chg->dev, "Couldn't configure dc_en override rc=%d\n", rc);
+		return rc;
+	}
+
+	return rc;
+}
+
+static void smblib_dc_plug_out_work(struct work_struct *work)
+{
+	struct smb_charger *chg = container_of(work, struct smb_charger,
+							dc_plug_out_delay_work.work);
+
+	chg->fake_dc_on = 0;  /*use for delay 1.8s*/
+	power_supply_changed(chg->dc_psy);
+	smblib_dbg(chg, PR_WLS, "Delay timeout and clear dc fake value\n");
+	vote(chg->awake_votable, DC_PLUGOUT_WIRELESS_VOTER, false, 0);
+}
+
+static void smblib_wireless_delay_work(struct work_struct *work)
+{
+	struct smb_charger *chg = container_of(work, struct smb_charger,
+							wireless_full_delay_work.work);
+	int rc;
+	u8 stat;
+
+	rc = smblib_read(chg, BATTERY_CHARGER_STATUS_1_REG, &stat);
+	if (rc < 0) {
+		smblib_err(chg, "Couldn't read BATTERY_CHARGER_STATUS_1 rc=%d\n",
+			rc);
+		return;
+	}
+
+	stat = stat & BATTERY_CHARGER_STATUS_MASK;
+	if (stat == TERMINATE_CHARGE) {
+		smblib_dbg(chg, PR_OEM, "release wireless lock when full\n");
+		/* when wpc charge done, set bark timer to 128s to decrease wakeups */
+		smblib_set_wdog_bark_timer(chg, BARK_TIMER_LONG);
+		vote(chg->awake_votable, DC_AWAKE_VOTER, false, 0);
+	}
+}
+
+#define POWER_GOOD_OFF_DELAY_MS 1800
+int smblib_set_wirless_power_good_enable(struct smb_charger *chg,
+				const union power_supply_propval *val)
+{
+	int rc = 0;
+
+	chg->power_good_en = val->intval;
+	smblib_dbg(chg, PR_OEM, "power good: %d\n", chg->power_good_en);
+
+	if (!chg->wireless_bq)
+		return rc;
+
+	if (chg->power_good_en) {
+		chg->fake_dc_on = 1;
+		smblib_dc_chg_q1_enable(chg, true);
+		cancel_delayed_work(&chg->dc_plug_out_delay_work);
+
+		if (chg->typec_mode == POWER_SUPPLY_TYPEC_SINK
+			|| chg->typec_mode == POWER_SUPPLY_TYPEC_SINK_POWERED_CABLE){
+			smblib_dbg(chg, PR_OEM, "typec :%d, en 3902 pass\n", chg->typec_mode);
+			ncp3902_pass_enable(chg, true);
+		}
+
+		/* disable OTG Voter for chargting via USB */
+		vote(chg->usb_icl_votable, OTG_VOTER, false, 0);
+		vote(chg->awake_votable, DC_PLUGOUT_WIRELESS_VOTER, false, 0);
+		rc = smblib_usb_pd_adapter_allowance_override(chg, FORCE_NULL);
+		if (rc < 0)
+			pr_err("Failed to set adapter allowance to 5V or 9v to 12v\n");
+
+		rc = smblib_masked_write(chg, USBIN_ADAPTER_ALLOW_CFG_REG,
+				USBIN_ADAPTER_ALLOW_MASK, USBIN_ADAPTER_ALLOW_5V_TO_12V);
+		if (rc < 0) {
+			pr_err("Couldn't set USBIN_ADAPTER_ALLOW_CFG_REG rc=%d\n", rc);
+		}
+
+		rc = smblib_icl_override(chg, SW_OVERRIDE_NO_CC_MODE);
+		if (rc < 0) {
+			pr_err("Couldn't disable ICL override rc=%d\n", rc);
+			return rc;
+		}
+	} else {
+		/* delay 1.8s to show discharging */
+		schedule_delayed_work(&chg->dc_plug_out_delay_work,
+				msecs_to_jiffies(POWER_GOOD_OFF_DELAY_MS));
+		vote(chg->awake_votable, DC_PLUGOUT_WIRELESS_VOTER, true, 0);
+		/*
+		* wireless detached and OTG plug-out, open q1 for wired charging.
+		* wireless detached and OTG plug-in, vote usb-icl to 0 to prevent charging hint.
+		*/
+
+		/* close ncp pass mode first for OTG and wireless conflict process */
+		ncp3902_pass_enable(chg, false);
+		msleep(50);
+
+		/* close ncp second for OTG and wireless conflict process */
+		if (is_ncp3902_pull_low(chg)) {
+			smblib_ncp3902_enable(chg, true);
+			msleep(50);
+		}
+
+		/* open q1 last for OTG and wireless conflict process */
+		if (chg->typec_mode != POWER_SUPPLY_TYPEC_SINK
+			&& chg->typec_mode != POWER_SUPPLY_TYPEC_SINK_POWERED_CABLE)
+			smblib_dc_chg_q1_enable(chg, false);
+		else
+			vote(chg->usb_icl_votable, OTG_VOTER, true, 0);
+
+		smblib_wl_bq_enable(chg, false);
+		if (smblib_get_fastcharge_mode(chg) == true)
+			smblib_set_fastcharge_mode(chg, false);
+
+		smblib_set_dc_pach_safe_when_power_good_enable(chg);
+
+		rc = smblib_usb_pd_adapter_allowance_override(chg, FORCE_NULL);
+		if (rc < 0)
+			pr_err("Failed to set adapter allowance to 5V or 9v to 12v\n");
+
+		rc = smblib_masked_write(chg, USBIN_ADAPTER_ALLOW_CFG_REG,
+				USBIN_ADAPTER_ALLOW_MASK, USBIN_ADAPTER_ALLOW_5V_OR_9V_TO_12V);
+		if (rc < 0) {
+			pr_err("Couldn't set USBIN_ADAPTER_ALLOW_CFG_REG rc=%d\n", rc);
+		}
+
+		chg->en_bq_flag = 0;
+		rc = smblib_icl_override(chg, HW_AUTO_MODE);
+		if (rc < 0) {
+			pr_err("Couldn't disable ICL override rc=%d\n", rc);
+			return rc;
+		}
+		/* close voter of termination when wireless plug out*/
+		vote(chg->usb_icl_votable, CHG_TERMINATION_VOTER, false, 0);
+	}
+
+	if (chg->dc_psy)
+		power_supply_changed(chg->dc_psy);
+	if (chg->wireless_psy)
+		power_supply_changed(chg->wireless_psy);
+	if (chg->batt_psy)
+		power_supply_changed(chg->batt_psy);
+
+	return 0;
+}
+
+
+int smblib_set_wirless_cp_enable(struct smb_charger *chg,
+				const union power_supply_propval *val)
+{
+	/* if use usbmid and dcin wireless charge, to do later*/
+	if (!chg->wireless_bq)
+		return 0;
+
+	if ((val->intval) && (chg->power_good_en)) {
+		printk("enable bq for quick wireless charge\n");
+		smblib_dbg(chg, PR_WLS, "enable bq for quick wireless charge\n");
+		smblib_wl_bq_enable(chg, true);
+		smblib_dc_therm_charging(chg, chg->dc_temp_level);
+		chg->en_bq_flag = 1;
+		/* enable FFC when cp enabled */
+		if (smblib_get_fastcharge_mode(chg) == false)
+			smblib_set_fastcharge_mode(chg, true);
+		if (chg->six_pin_step_charge_enable) {
+			/* start six pin step charge monitor work */
+			schedule_delayed_work(&chg->six_pin_batt_step_chg_work,
+					msecs_to_jiffies(STEP_CHG_DELAYED_START_MS));
+		}
+	} else {
+		printk("disable bq quick charge\n");
+		smblib_dbg(chg, PR_WLS, "disable bq quick charge\n");
+		smblib_wl_bq_enable(chg, false);
+		chg->en_bq_flag = 0;
+	}
+
+	if (chg->wireless_psy)
+		power_supply_changed(chg->wireless_psy);
+	return 0;
+}
+
+static void smblib_charger_type_recheck(struct work_struct *work)
+{
+	struct smb_charger *chg = container_of(work, struct smb_charger,
+			charger_type_recheck.work);
+	int recheck_time = TYPE_RECHECK_TIME_5S;
+	static int last_charger_type, check_count;
+	int rc, dc_power_on;
+	union power_supply_propval pval = {0,};
+
+	smblib_get_prop_dc_present(chg, &pval);
+	dc_power_on = pval.intval;
+	smblib_update_usb_type(chg);
+	smblib_dbg(chg, PR_OEM, "typec_mode:%d,last:%d: real charger type:%d\n",
+			chg->typec_mode, last_charger_type, chg->real_charger_type);
+
+	if (last_charger_type != chg->real_charger_type)
+		check_count--;
+	last_charger_type = chg->real_charger_type;
+
+	if (chg->real_charger_type == POWER_SUPPLY_TYPE_USB_HVDCP_3 ||
+			chg->real_charger_type == POWER_SUPPLY_TYPE_USB_HVDCP_3P5 ||
+			chg->real_charger_type == POWER_SUPPLY_TYPE_USB_CDP ||
+			chg->pd_active || (check_count >= TYPE_RECHECK_COUNT) ||
+			((chg->real_charger_type == POWER_SUPPLY_TYPE_USB_HVDCP) &&
+			(chg->qc2_unsupported == true)) ||
+			((chg->real_charger_type == POWER_SUPPLY_TYPE_USB_FLOAT) &&
+			(chg->typec_mode == POWER_SUPPLY_TYPEC_SINK_AUDIO_ADAPTER)) ||
+			((chg->real_charger_type == POWER_SUPPLY_TYPE_USB_FLOAT) &&
+			  dc_power_on)) {
+		smblib_dbg(chg, PR_OEM, "hvdcp detect or check_count = %d break\n",
+				check_count);
+		check_count = 0;
+		return;
+	}
+
+	if (smblib_get_prop_dfp_mode(chg) != POWER_SUPPLY_TYPEC_NONE)
+		goto check_next;
+
+		if (chg->typec_port && !chg->pr_swap_in_progress) {
+
+			/*
+			 * Schedule the work to differentiate actual removal
+			 * of cable and detach interrupt during role swap,
+			 * unregister the partner only during actual cable
+			 * removal.
+			 */
+			cancel_delayed_work(&chg->pr_swap_detach_work);
+			vote(chg->awake_votable, DETACH_DETECT_VOTER, true, 0);
+			queue_delayed_work(system_power_efficient_wq,&chg->pr_swap_detach_work,
+				msecs_to_jiffies(TYPEC_DETACH_DETECT_DELAY_MS));
+			smblib_force_dr_mode(chg, TYPEC_PORT_DRP);
+			/*
+			 * To handle cable removal during role
+			 * swap failure.
+			 */
+			chg->typec_role_swap_failed = false;
+		}
+
+	if (!chg->recheck_charger)
+		chg->precheck_charger_type = chg->real_charger_type;
+	chg->recheck_charger = true;
+
+	/* need request hsusb phy dpdm to false then true for float charger */
+	if (chg->real_charger_type == POWER_SUPPLY_TYPE_USB_FLOAT) {
+		rc = smblib_request_dpdm(chg, false);
+		if (rc < 0)
+			smblib_err(chg, "Couldn't disable DPDM rc=%d\n", rc);
+
+		msleep(500);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
+	}
+
+	if (chg->real_charger_type == POWER_SUPPLY_TYPE_USB_HVDCP)
+		chg->hvdcp_recheck_status = true;
+
+	smblib_rerun_apsd_if_required(chg);
+
+check_next:
+	check_count++;
+	schedule_delayed_work(&chg->charger_type_recheck,
+				msecs_to_jiffies(recheck_time));
 }
 
 /*add for wireless reverse charge to disable dc*/

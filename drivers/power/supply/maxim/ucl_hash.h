@@ -50,4 +50,8 @@
 #define MAX_HASH_FUNCTIONS 3
 
 extern int hash_size[MAX_HASH_FUNCTIONS];
+<<<<<<< HEAD
 #endif//UCL_HASH
+=======
+#endif //UCL_HASH
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)

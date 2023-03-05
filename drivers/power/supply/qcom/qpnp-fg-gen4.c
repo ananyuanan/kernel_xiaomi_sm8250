@@ -364,6 +364,10 @@ static bool is_batt_vendor_gyb;
 static bool is_batt_vendor_nvt;
 static bool is_low_temp_flag;
 
+static bool is_batt_vendor_gyb;
+static bool is_batt_vendor_nvt;
+static bool is_low_temp_flag;
+
 static bool fg_profile_dump;
 static ssize_t profile_dump_show(struct device *dev, struct device_attribute
 		*attr, char *buf)
@@ -1092,7 +1096,10 @@ static int fg_gen4_get_prop_capacity_raw(struct fg_gen4_chip *chip, int *val)
 	return 0;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 static int fg_gen4_get_prop_soc_decimal_rate(struct fg_gen4_chip *chip, int *val)
 {
 	struct fg_dev *fg = &chip->fg;
@@ -2790,7 +2797,11 @@ done:
 	batt_psy_initialized(fg);
 	fg_notify_charger(fg);
 	power_supply_changed(fg->fg_psy);
+<<<<<<< HEAD
 	mod_delayed_work(system_freezable_power_efficient_wq, &chip->ttf->ttf_work, msecs_to_jiffies(10000));
+=======
+	schedule_delayed_work(&chip->ttf->ttf_work, msecs_to_jiffies(10000));
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	fg_dbg(fg, FG_STATUS, "profile loaded successfully");
 out:
 	if (!chip->esr_fast_calib || is_debug_batt_id(fg)) {
@@ -3591,7 +3602,10 @@ static int fg_gen4_validate_soc_scale_mode(struct fg_gen4_chip *chip)
 		vbatt_scale_mv = 3400;
 	else
 		vbatt_scale_mv = chip->dt.vbatt_scale_thr_mv;
+<<<<<<< HEAD
 	pr_info("get vbatt_scale_mv = %d, current now = %d\n", vbatt_scale_mv, chip->current_now);
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!chip->soc_scale_mode && fg->charge_status ==
 		POWER_SUPPLY_STATUS_DISCHARGING &&
 		chip->current_now  > 0 &&
@@ -4412,7 +4426,10 @@ static void soc_scale_work(struct work_struct *work)
 		if (delta_time < 0)
 			delta_time = 0;
 		soc_changed = min(1, delta_time);
+<<<<<<< HEAD
 		fg_dbg(fg, FG_FVSS, "get delta_time = %d, soc_changed =%d, time_since_last_change_sec = %d\n", delta_time, soc_changed, time_since_last_change_sec);
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 		chip->soc_scale_msoc = chip->prev_soc_scale_msoc - soc_changed;
 		chip->scale_timer = chip->dt.scale_timer_ms /
@@ -5297,7 +5314,11 @@ static int fg_psy_get_property(struct power_supply *psy,
 		rc = fg_gen4_get_charge_counter_shadow(chip, &pval->intval);
 		break;
 	case POWER_SUPPLY_PROP_CYCLE_COUNT:
+#ifdef CONFIG_BATT_VERIFY_BY_DS28E16
+		pval->intval = fg->maxim_cycle_count;
+#else
 		rc = get_cycle_count(chip->counter, &pval->intval);
+#endif
 		break;
 	case POWER_SUPPLY_PROP_CYCLE_COUNTS:
 		rc = get_cycle_counts(chip->counter, &pval->strval);
@@ -7200,7 +7221,11 @@ static void empty_restart_fg_work(struct work_struct *work)
 			schedule_delayed_work(&fg->soc_monitor_work,
 				msecs_to_jiffies(RESTART_FG_MONITOR_SOC_WAIT_PER_MS));
 		} else {
+<<<<<<< HEAD
 			mod_delayed_work(system_freezable_power_efficient_wq, 
+=======
+			schedule_delayed_work(
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 					&fg->empty_restart_fg_work,
 					msecs_to_jiffies(RESTART_FG_WORK_MS));
 		}
@@ -7475,7 +7500,10 @@ static int fg_gen4_probe(struct platform_device *pdev)
 	}
 
 	chip->hw_country = get_hw_country_version();
+<<<<<<< HEAD
 	dev_err(fg->dev, "hw_country: %d\n", chip->hw_country);
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	rc = fg_gen4_parse_dt(chip);
 	if (rc < 0) {
@@ -7608,9 +7636,17 @@ static int fg_gen4_probe(struct platform_device *pdev)
 
 	fg_gen4_post_init(chip);
 	if (chip->dt.fg_increase_100soc_time) {
+<<<<<<< HEAD
         mod_delayed_work(system_freezable_power_efficient_wq, &fg->soc_monitor_work, msecs_to_jiffies(0));
 	} else {
         mod_delayed_work(system_freezable_power_efficient_wq, &fg->soc_monitor_work, msecs_to_jiffies(5*MONITOR_SOC_WAIT_MS));
+=======
+		schedule_delayed_work(&fg->soc_monitor_work,
+			msecs_to_jiffies(0));
+	} else {
+		schedule_delayed_work(&fg->soc_monitor_work,
+			msecs_to_jiffies(5*MONITOR_SOC_WAIT_MS));
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 
 	/*
@@ -7621,7 +7657,11 @@ static int fg_gen4_probe(struct platform_device *pdev)
 	 */
 	if ((volt_uv >= VBAT_RESTART_FG_EMPTY_UV)
 			&& (msoc == 0) && (batt_temp >= TEMP_THR_RESTART_FG))
+<<<<<<< HEAD
 		mod_delayed_work(system_freezable_power_efficient_wq, &fg->empty_restart_fg_work,
+=======
+		schedule_delayed_work(&fg->empty_restart_fg_work,
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 				msecs_to_jiffies(RESTART_FG_START_WORK_MS));
 	pr_debug("FG GEN4 driver probed successfully\n");
 	return 0;

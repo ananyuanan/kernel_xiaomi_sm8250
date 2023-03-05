@@ -26,4 +26,9 @@
 // sha3_hmac.h - Include file for sha3_hmac module.
 //
 
+<<<<<<< HEAD
 int sha3_256_hmac(unsigned char *key, int key_len, unsigned char *message, int msg_len, unsigned char *mac);
+=======
+int sha3_256_hmac(unsigned char *key, int key_len, unsigned char *message,
+		  int msg_len, unsigned char *mac);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)

@@ -17,11 +17,19 @@
 
 // (high-level) operation mode
 enum {
+<<<<<<< HEAD
     LN8282_OPMODE_UNKNOWN = -1,
     LN8282_OPMODE_STANDBY = 0,
     LN8282_OPMODE_BYPASS  = 1,
     LN8282_OPMODE_SWITCHING = 2,
     LN8282_OPMODE_SWITCHING_ALT = 3,
+=======
+	LN8282_OPMODE_UNKNOWN = -1,
+	LN8282_OPMODE_STANDBY = 0,
+	LN8282_OPMODE_BYPASS = 1,
+	LN8282_OPMODE_SWITCHING = 2,
+	LN8282_OPMODE_SWITCHING_ALT = 3,
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 };
 
 // Forward declarations

@@ -647,8 +647,17 @@ config CHARGER_CROS_USBPD
 	  that into power_supply properties.
 
 source "drivers/power/supply/qcom/Kconfig"
+<<<<<<< HEAD
 source "drivers/power/supply/ti/Kconfig"
 source "drivers/power/supply/maxim/Kconfig"
 source "drivers/power/supply/cas_qcom/Kconfig"
+=======
+source "drivers/power/supply/qcom_cas/Kconfig"
+source "drivers/power/supply/lionsemi/Kconfig"
+source "drivers/power/supply/maxim/Kconfig"
+source "drivers/power/supply/nuvolta/Kconfig"
+source "drivers/power/supply/renesas/Kconfig"
+source "drivers/power/supply/ti/Kconfig"
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 endif # POWER_SUPPLY

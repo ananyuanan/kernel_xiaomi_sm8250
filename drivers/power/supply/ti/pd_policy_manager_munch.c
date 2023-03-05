@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 #define pr_fmt(fmt)	"[USBPD-PM]: %s: " fmt, __func__
+=======
+#define pr_fmt(fmt) "[USBPD-PM]: %s: " fmt, __func__
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -27,6 +31,7 @@
 
 #include "pd_policy_manager_munch.h"
 
+<<<<<<< HEAD
 #define PD_SRC_PDO_TYPE_FIXED		0
 #define PD_SRC_PDO_TYPE_BATTERY		1
 #define PD_SRC_PDO_TYPE_VARIABLE	2
@@ -48,6 +53,29 @@
 #define PM_WORK_RUN_NORMAL_INTERVAL		500
 #define PM_WORK_RUN_QUICK_INTERVAL		200
 #define PM_WORK_RUN_CRITICAL_INTERVAL		100
+=======
+#define PD_SRC_PDO_TYPE_FIXED 0
+#define PD_SRC_PDO_TYPE_BATTERY 1
+#define PD_SRC_PDO_TYPE_VARIABLE 2
+#define PD_SRC_PDO_TYPE_AUGMENTED 3
+
+#define BATT_MAX_CHG_VOLT 4450
+#define BATT_FAST_CHG_CURR 6000
+#define BUS_OVP_THRESHOLD 12000
+#define BUS_OVP_ALARM_THRESHOLD 9500
+
+#define BUS_VOLT_INIT_UP 700
+#define MIN_ADATPER_VOLTAGE_11V 11000
+#define CAPACITY_HIGH_THR 90
+
+#define BAT_VOLT_LOOP_LMT BATT_MAX_CHG_VOLT
+#define BAT_CURR_LOOP_LMT BATT_FAST_CHG_CURR
+#define BUS_VOLT_LOOP_LMT BUS_OVP_THRESHOLD
+
+#define PM_WORK_RUN_NORMAL_INTERVAL 500
+#define PM_WORK_RUN_QUICK_INTERVAL 200
+#define PM_WORK_RUN_CRITICAL_INTERVAL 100
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 int pd_log_count_poussin = 0;
 
 enum {
@@ -61,6 +89,7 @@ enum {
 };
 
 static struct pdpm_config pm_config = {
+<<<<<<< HEAD
 	.bat_volt_lp_lmt		= BAT_VOLT_LOOP_LMT,
 	.bat_curr_lp_lmt		= BAT_CURR_LOOP_LMT + 1000,
 	.bus_volt_lp_lmt		= BUS_VOLT_LOOP_LMT,
@@ -77,6 +106,24 @@ static struct pdpm_config pm_config = {
 
 	.cp_sec_enable			= true,
 	.fc2_disable_sw			= true,
+=======
+	.bat_volt_lp_lmt = BAT_VOLT_LOOP_LMT,
+	.bat_curr_lp_lmt = BAT_CURR_LOOP_LMT + 1000,
+	.bus_volt_lp_lmt = BUS_VOLT_LOOP_LMT,
+	.bus_curr_lp_lmt = BAT_CURR_LOOP_LMT >> 1,
+	.bus_curr_compensate = 0,
+
+	.fc2_taper_current = TAPER_DONE_NORMAL_MA,
+	.fc2_steps = 1,
+
+	.min_adapter_volt_required = 10000,
+	.min_adapter_curr_required = 2000,
+
+	.min_vbat_for_cp = 3500,
+
+	.cp_sec_enable = true,
+	.fc2_disable_sw = true,
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 };
 
 static struct usbpd_pm *__pdpm;
@@ -142,7 +189,13 @@ static int usbpd_get_effective_fcc_val(struct usbpd_pm *pdpm)
 /* get main switch mode charger charge type from battery power supply property */
 static int pd_get_batt_charge_type(struct usbpd_pm *pdpm, int *charge_type)
 {
+<<<<<<< HEAD
 	union power_supply_propval pval = {0,};
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	int rc = 0;
 
 	usbpd_check_batt_psy(pdpm);
@@ -151,7 +204,11 @@ static int pd_get_batt_charge_type(struct usbpd_pm *pdpm, int *charge_type)
 		return -ENODEV;
 
 	rc = power_supply_get_property(pdpm->sw_psy,
+<<<<<<< HEAD
 				POWER_SUPPLY_PROP_CHARGE_TYPE, &pval);
+=======
+				       POWER_SUPPLY_PROP_CHARGE_TYPE, &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0) {
 		pr_info("Couldn't get fastcharge mode:%d\n", rc);
 		return rc;
@@ -166,7 +223,13 @@ static int pd_get_batt_charge_type(struct usbpd_pm *pdpm, int *charge_type)
 /* get step charge vfloat index from battery power supply property */
 static int pd_get_batt_step_vfloat_index(struct usbpd_pm *pdpm, int *step_index)
 {
+<<<<<<< HEAD
 	union power_supply_propval pval = {0,};
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	int rc = 0;
 
 	usbpd_check_batt_psy(pdpm);
@@ -174,8 +237,13 @@ static int pd_get_batt_step_vfloat_index(struct usbpd_pm *pdpm, int *step_index)
 	if (!pdpm->sw_psy)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	rc = power_supply_get_property(pdpm->sw_psy,
 				POWER_SUPPLY_PROP_STEP_VFLOAT_INDEX, &pval);
+=======
+	rc = power_supply_get_property(
+		pdpm->sw_psy, POWER_SUPPLY_PROP_STEP_VFLOAT_INDEX, &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0) {
 		pr_info("Couldn't get fastcharge mode:%d\n", rc);
 		return rc;
@@ -194,6 +262,7 @@ static int pd_bq_soft_taper_by_main_charger_charge_type(struct usbpd_pm *pdpm)
 	int effective_fcc_bq_taper = 0;
 
 	rc = pd_get_batt_step_vfloat_index(pdpm, &step_index);
+<<<<<<< HEAD
 	if (rc >=0 && step_index == STEP_VFLOAT_INDEX_MAX) {
 		rc = pd_get_batt_charge_type(pdpm, &curr_charge_type);
 		if (rc >=0
@@ -205,6 +274,21 @@ static int pd_bq_soft_taper_by_main_charger_charge_type(struct usbpd_pm *pdpm)
 			if (pdpm->fcc_votable)
 				vote(pdpm->fcc_votable, BQ_TAPER_FCC_VOTER,
 					true, effective_fcc_bq_taper * 1000);
+=======
+	if (rc >= 0 && step_index == STEP_VFLOAT_INDEX_MAX) {
+		rc = pd_get_batt_charge_type(pdpm, &curr_charge_type);
+		if (rc >= 0 &&
+		    curr_charge_type == POWER_SUPPLY_CHARGE_TYPE_TAPER) {
+			effective_fcc_bq_taper =
+				usbpd_get_effective_fcc_val(pdpm);
+			effective_fcc_bq_taper -=
+				BQ_SOFT_TAPER_DECREASE_STEP_MA;
+			pr_err("BS voltage is reached to maxium vfloat, decrease fcc: %d mA\n",
+			       effective_fcc_bq_taper);
+			if (pdpm->fcc_votable)
+				vote(pdpm->fcc_votable, BQ_TAPER_FCC_VOTER,
+				     true, effective_fcc_bq_taper * 1000);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		}
 	}
 
@@ -214,7 +298,13 @@ static int pd_bq_soft_taper_by_main_charger_charge_type(struct usbpd_pm *pdpm)
 /* get thermal level from battery power supply property */
 static int pd_get_batt_current_thermal_level(struct usbpd_pm *pdpm, int *level)
 {
+<<<<<<< HEAD
 	union power_supply_propval pval = {0,};
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	int rc = 0;
 
 	usbpd_check_batt_psy(pdpm);
@@ -222,8 +312,13 @@ static int pd_get_batt_current_thermal_level(struct usbpd_pm *pdpm, int *level)
 	if (!pdpm->sw_psy)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	rc = power_supply_get_property(pdpm->sw_psy,
 				POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT, &pval);
+=======
+	rc = power_supply_get_property(
+		pdpm->sw_psy, POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT, &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0) {
 		pr_info("Couldn't get fastcharge mode:%d\n", rc);
 		return rc;
@@ -237,7 +332,13 @@ static int pd_get_batt_current_thermal_level(struct usbpd_pm *pdpm, int *level)
 
 static int pd_get_batt_capacity(struct usbpd_pm *pdpm, int *capacity)
 {
+<<<<<<< HEAD
 	union power_supply_propval pval = {0,};
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	int rc = 0;
 
 	usbpd_check_batt_psy(pdpm);
@@ -245,8 +346,13 @@ static int pd_get_batt_capacity(struct usbpd_pm *pdpm, int *capacity)
 	if (!pdpm->sw_psy)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	rc = power_supply_get_property(pdpm->sw_psy,
 				POWER_SUPPLY_PROP_CAPACITY, &pval);
+=======
+	rc = power_supply_get_property(pdpm->sw_psy, POWER_SUPPLY_PROP_CAPACITY,
+				       &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0) {
 		pr_info("Couldn't get fastcharge mode:%d\n", rc);
 		return rc;
@@ -257,6 +363,7 @@ static int pd_get_batt_capacity(struct usbpd_pm *pdpm, int *capacity)
 	return rc;
 }
 
+<<<<<<< HEAD
 static void pd_bq_check_ibus_to_enable_dual_bq(struct usbpd_pm *pdpm, int ibus_ma)
 {
 
@@ -267,6 +374,21 @@ static void pd_bq_check_ibus_to_enable_dual_bq(struct usbpd_pm *pdpm, int ibus_m
 			&& (pdpm->slave_bq_disabled_check_count < IBUS_THR_TO_CLOSE_SLAVE_COUNT_MAX)) {
 		pdpm->slave_bq_disabled_check_count++;
 		if (pdpm->slave_bq_disabled_check_count >= IBUS_THR_TO_CLOSE_SLAVE_COUNT_MAX) {
+=======
+static void pd_bq_check_ibus_to_enable_dual_bq(struct usbpd_pm *pdpm,
+					       int ibus_ma)
+{
+	int capacity = 0;
+
+	pd_get_batt_capacity(pdpm, &capacity);
+	if (ibus_ma <= IBUS_THRESHOLD_MA_FOR_DUAL_BQ_LN8000 &&
+	    !pdpm->no_need_en_slave_bq &&
+	    (pdpm->slave_bq_disabled_check_count <
+	     IBUS_THR_TO_CLOSE_SLAVE_COUNT_MAX)) {
+		pdpm->slave_bq_disabled_check_count++;
+		if (pdpm->slave_bq_disabled_check_count >=
+		    IBUS_THR_TO_CLOSE_SLAVE_COUNT_MAX) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			pdpm->no_need_en_slave_bq = true;
 			/* disable slave bq due to total low ibus to avoid bq ucp */
 			pr_err("ibus decrease to threshold, disable slave bq now\n");
@@ -280,8 +402,15 @@ static void pd_bq_check_ibus_to_enable_dual_bq(struct usbpd_pm *pdpm, int ibus_m
 				usbpd_pm_check_cp_enabled(pdpm);
 			}
 		}
+<<<<<<< HEAD
 	} else if (pdpm->no_need_en_slave_bq && (capacity < CAPACITY_HIGH_THR)
 			&& (ibus_ma > (IBUS_THRESHOLD_MA_FOR_DUAL_BQ_LN8000 + IBUS_THR_MA_HYS_FOR_DUAL_BQ))) {
+=======
+	} else if (pdpm->no_need_en_slave_bq &&
+		   (capacity < CAPACITY_HIGH_THR) &&
+		   (ibus_ma > (IBUS_THRESHOLD_MA_FOR_DUAL_BQ_LN8000 +
+			       IBUS_THR_MA_HYS_FOR_DUAL_BQ))) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (!pdpm->cp_sec.charge_enabled) {
 			pdpm->no_need_en_slave_bq = false;
 			/* re-enable slave bq due to master ibus increase above threshold + hys */
@@ -298,7 +427,13 @@ static void pd_bq_check_ibus_to_enable_dual_bq(struct usbpd_pm *pdpm, int ibus_m
 /* determine whether to disable cp according to jeita status */
 static bool pd_disable_cp_by_jeita_status(struct usbpd_pm *pdpm)
 {
+<<<<<<< HEAD
 	union power_supply_propval pval = {0,};
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	int batt_temp = 0, bq_input_suspend = 0;
 	int rc;
 
@@ -306,7 +441,11 @@ static bool pd_disable_cp_by_jeita_status(struct usbpd_pm *pdpm)
 		return false;
 
 	rc = power_supply_get_property(pdpm->sw_psy,
+<<<<<<< HEAD
 			POWER_SUPPLY_PROP_INPUT_SUSPEND, &pval);
+=======
+				       POWER_SUPPLY_PROP_INPUT_SUSPEND, &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!rc)
 		bq_input_suspend = !!pval.intval;
 
@@ -319,8 +458,13 @@ static bool pd_disable_cp_by_jeita_status(struct usbpd_pm *pdpm)
 	if (!pdpm->bms_psy)
 		return false;
 
+<<<<<<< HEAD
 	rc = power_supply_get_property(pdpm->bms_psy,
 				POWER_SUPPLY_PROP_TEMP, &pval);
+=======
+	rc = power_supply_get_property(pdpm->bms_psy, POWER_SUPPLY_PROP_TEMP,
+				       &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0) {
 		pr_info("Couldn't get batt temp prop:%d\n", rc);
 		return false;
@@ -332,6 +476,7 @@ static bool pd_disable_cp_by_jeita_status(struct usbpd_pm *pdpm)
 	if (batt_temp >= pdpm->battery_warm_th && !pdpm->jeita_triggered) {
 		pdpm->jeita_triggered = true;
 		return true;
+<<<<<<< HEAD
 	} else if (batt_temp <= JEITA_COOL_NOT_ALLOW_CP_THR 
 			&& !pdpm->jeita_triggered) {
 		pdpm->jeita_triggered = true;
@@ -339,6 +484,16 @@ static bool pd_disable_cp_by_jeita_status(struct usbpd_pm *pdpm)
 	} else if (batt_temp <= (pdpm->battery_warm_th - JEITA_HYSTERESIS)
 			&& (batt_temp >= (JEITA_COOL_NOT_ALLOW_CP_THR + JEITA_HYSTERESIS))
 			&& pdpm->jeita_triggered) {
+=======
+	} else if (batt_temp <= JEITA_COOL_NOT_ALLOW_CP_THR &&
+		   !pdpm->jeita_triggered) {
+		pdpm->jeita_triggered = true;
+		return true;
+	} else if (batt_temp <= (pdpm->battery_warm_th - JEITA_HYSTERESIS) &&
+		   (batt_temp >=
+		    (JEITA_COOL_NOT_ALLOW_CP_THR + JEITA_HYSTERESIS)) &&
+		   pdpm->jeita_triggered) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		pdpm->jeita_triggered = false;
 		return false;
 	} else {
@@ -349,14 +504,24 @@ static bool pd_disable_cp_by_jeita_status(struct usbpd_pm *pdpm)
 /* get bq27z561 fastcharge mode to enable or disabled */
 static bool pd_get_bms_digest_verified(struct usbpd_pm *pdpm)
 {
+<<<<<<< HEAD
 	union power_supply_propval pval = {0,};
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	int rc;
 
 	if (!pdpm->bms_psy)
 		return false;
 
 	rc = power_supply_get_property(pdpm->bms_psy,
+<<<<<<< HEAD
 				POWER_SUPPLY_PROP_AUTHENTIC, &pval);
+=======
+				       POWER_SUPPLY_PROP_AUTHENTIC, &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0) {
 		pr_info("Couldn't get fastcharge mode:%d\n", rc);
 		return false;
@@ -368,20 +533,34 @@ static bool pd_get_bms_digest_verified(struct usbpd_pm *pdpm)
 		return true;
 	else
 		return false;
+<<<<<<< HEAD
 
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 }
 
 /* get bq27z561 chip ok*/
 static bool pd_get_bms_chip_ok(struct usbpd_pm *pdpm)
 {
+<<<<<<< HEAD
 	union power_supply_propval pval = {0,};
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	int rc;
 
 	if (!pdpm->bms_psy)
 		return false;
 
+<<<<<<< HEAD
 	rc = power_supply_get_property(pdpm->bms_psy,
 				POWER_SUPPLY_PROP_CHIP_OK, &pval);
+=======
+	rc = power_supply_get_property(pdpm->bms_psy, POWER_SUPPLY_PROP_CHIP_OK,
+				       &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0) {
 		pr_info("Couldn't get chip ok:%d\n", rc);
 		return false;
@@ -393,20 +572,34 @@ static bool pd_get_bms_chip_ok(struct usbpd_pm *pdpm)
 		return true;
 	else
 		return false;
+<<<<<<< HEAD
 
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 }
 
 /* get fastcharge mode */
 static bool pd_get_fastcharge_mode_enabled(struct usbpd_pm *pdpm)
 {
+<<<<<<< HEAD
 	union power_supply_propval pval = {0,};
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	int rc;
 
 	if (!pdpm->bms_psy)
 		return false;
 
+<<<<<<< HEAD
 	rc = power_supply_get_property(pdpm->bms_psy,
 				POWER_SUPPLY_PROP_FASTCHARGE_MODE, &pval);
+=======
+	rc = power_supply_get_property(
+		pdpm->bms_psy, POWER_SUPPLY_PROP_FASTCHARGE_MODE, &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0) {
 		pr_info("Couldn't get fastcharge mode:%d\n", rc);
 		return false;
@@ -512,9 +705,17 @@ static void usbpd_check_cp_psy(struct usbpd_pm *pdpm)
 {
 	if (!pdpm->cp_psy) {
 		if (pm_config.cp_sec_enable)
+<<<<<<< HEAD
 			pdpm->cp_psy = power_supply_get_by_name("bq2597x-master");
 		else
 			pdpm->cp_psy = power_supply_get_by_name("bq2597x-standalone");
+=======
+			pdpm->cp_psy =
+				power_supply_get_by_name("bq2597x-master");
+		else
+			pdpm->cp_psy =
+				power_supply_get_by_name("bq2597x-standalone");
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (!pdpm->cp_psy)
 			pr_err("cp_psy not found\n");
 	}
@@ -532,25 +733,41 @@ static void usbpd_check_cp_sec_psy(struct usbpd_pm *pdpm)
 static void usbpd_pm_update_cp_status(struct usbpd_pm *pdpm)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	usbpd_check_cp_psy(pdpm);
 
 	if (!pdpm->cp_psy)
 		return;
 
+<<<<<<< HEAD
 	ret = power_supply_get_property(pdpm->cp_psy,
 			POWER_SUPPLY_PROP_TI_BATTERY_VOLTAGE, &val);
+=======
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_TI_BATTERY_VOLTAGE, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->cp.vbat_volt = val.intval;
 	if (!pdpm->cp.vbat_volt)
 		pdpm->cp.vbat_volt = pdpm->cp.bms_vbat_mv;
 	ret = power_supply_get_property(pdpm->cp_psy,
+<<<<<<< HEAD
 			POWER_SUPPLY_PROP_TI_BUS_VOLTAGE, &val);
+=======
+					POWER_SUPPLY_PROP_TI_BUS_VOLTAGE, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->cp.vbus_volt = val.intval;
 
 	ret = power_supply_get_property(pdpm->cp_psy,
+<<<<<<< HEAD
 			POWER_SUPPLY_PROP_TI_BUS_CURRENT, &val);
 	if (!ret)
 		pdpm->cp.ibus_curr = val.intval;
@@ -577,50 +794,109 @@ static void usbpd_pm_update_cp_status(struct usbpd_pm *pdpm)
 
 	ret = power_supply_get_property(pdpm->cp_psy,
 			POWER_SUPPLY_PROP_TI_VBUS_PRESENT, &val);
+=======
+					POWER_SUPPLY_PROP_TI_BUS_CURRENT, &val);
+	if (!ret)
+		pdpm->cp.ibus_curr = val.intval;
+
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_TI_BUS_TEMPERATURE, &val);
+	if (!ret)
+		pdpm->cp.bus_temp = val.intval;
+
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_TI_BATTERY_TEMPERATURE, &val);
+	if (!ret)
+		pdpm->cp.bat_temp = val.intval;
+
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_TI_DIE_TEMPERATURE, &val);
+	if (!ret)
+		pdpm->cp.die_temp = val.intval;
+
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_TI_BATTERY_PRESENT, &val);
+	if (!ret)
+		pdpm->cp.batt_pres = val.intval;
+
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_TI_VBUS_PRESENT, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->cp.vbus_pres = val.intval;
 
 	usbpd_check_bms_psy(pdpm);
 	if (pdpm->bms_psy) {
+<<<<<<< HEAD
 		ret = power_supply_get_property(pdpm->bms_psy,
 				POWER_SUPPLY_PROP_CURRENT_NOW, &val);
+=======
+		ret = power_supply_get_property(
+			pdpm->bms_psy, POWER_SUPPLY_PROP_CURRENT_NOW, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (!ret) {
 			if (pdpm->cp.vbus_pres)
 				pdpm->cp.ibat_curr = -(val.intval / 1000);
 		}
 
+<<<<<<< HEAD
 		ret = power_supply_get_property(pdpm->bms_psy,
 			POWER_SUPPLY_PROP_I2C_ERROR_COUNT, &val);
+=======
+		ret = power_supply_get_property(
+			pdpm->bms_psy, POWER_SUPPLY_PROP_I2C_ERROR_COUNT, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (!ret) {
 			pdpm->bms_i2c_error_count = val.intval;
 		}
 
 		if (!pdpm->use_qcom_gauge) {
+<<<<<<< HEAD
 			ret = power_supply_get_property(pdpm->bms_psy,
 						POWER_SUPPLY_PROP_VOLTAGE_NOW, &val);
+=======
+			ret = power_supply_get_property(
+				pdpm->bms_psy, POWER_SUPPLY_PROP_VOLTAGE_NOW,
+				&val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			if (!ret)
 				pdpm->cp.bms_vbat_mv = val.intval / 1000;
 			else
 				pr_err("Failed to read bms voltage now\n");
 		}
 	}
+<<<<<<< HEAD
 	ret = power_supply_get_property(pdpm->cp_psy,
 			POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+=======
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->cp.charge_enabled = val.intval;
 
 	if ((pm_config.cp_sec_enable) && (pdpm->cp_sec.charge_enabled))
+<<<<<<< HEAD
 		ret = power_supply_get_property(pdpm->cp_sec_psy,
 				POWER_SUPPLY_PROP_TI_ALARM_STATUS, &val);
 
 	ret = power_supply_get_property(pdpm->cp_psy,
 			POWER_SUPPLY_PROP_TI_ALARM_STATUS, &val);
+=======
+		ret = power_supply_get_property(
+			pdpm->cp_sec_psy, POWER_SUPPLY_PROP_TI_ALARM_STATUS,
+			&val);
+
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_TI_ALARM_STATUS, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret) {
 		pdpm->cp.bat_ovp_alarm = !!(val.intval & BAT_OVP_ALARM_MASK);
 		pdpm->cp.bat_ocp_alarm = !!(val.intval & BAT_OCP_ALARM_MASK);
 		pdpm->cp.bus_ovp_alarm = !!(val.intval & BUS_OVP_ALARM_MASK);
 		pdpm->cp.bus_ocp_alarm = !!(val.intval & BUS_OCP_ALARM_MASK);
 		pdpm->cp.bat_ucp_alarm = !!(val.intval & BAT_UCP_ALARM_MASK);
+<<<<<<< HEAD
 		pdpm->cp.bat_therm_alarm = !!(val.intval & BAT_THERM_ALARM_MASK);
 		pdpm->cp.bus_therm_alarm = !!(val.intval & BUS_THERM_ALARM_MASK);
 		pdpm->cp.die_therm_alarm = !!(val.intval & DIE_THERM_ALARM_MASK);
@@ -628,11 +904,24 @@ static void usbpd_pm_update_cp_status(struct usbpd_pm *pdpm)
 
 	ret = power_supply_get_property(pdpm->cp_psy,
 			POWER_SUPPLY_PROP_TI_FAULT_STATUS, &val);
+=======
+		pdpm->cp.bat_therm_alarm =
+			!!(val.intval & BAT_THERM_ALARM_MASK);
+		pdpm->cp.bus_therm_alarm =
+			!!(val.intval & BUS_THERM_ALARM_MASK);
+		pdpm->cp.die_therm_alarm =
+			!!(val.intval & DIE_THERM_ALARM_MASK);
+	}
+
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_TI_FAULT_STATUS, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret) {
 		pdpm->cp.bat_ovp_fault = !!(val.intval & BAT_OVP_FAULT_MASK);
 		pdpm->cp.bat_ocp_fault = !!(val.intval & BAT_OCP_FAULT_MASK);
 		pdpm->cp.bus_ovp_fault = !!(val.intval & BUS_OVP_FAULT_MASK);
 		pdpm->cp.bus_ocp_fault = !!(val.intval & BUS_OCP_FAULT_MASK);
+<<<<<<< HEAD
 		pdpm->cp.bat_therm_fault = !!(val.intval & BAT_THERM_FAULT_MASK);
 		pdpm->cp.bus_therm_fault = !!(val.intval & BUS_THERM_FAULT_MASK);
 		pdpm->cp.die_therm_fault = !!(val.intval & DIE_THERM_FAULT_MASK);
@@ -640,6 +929,18 @@ static void usbpd_pm_update_cp_status(struct usbpd_pm *pdpm)
 
 	ret = power_supply_get_property(pdpm->cp_psy,
 			POWER_SUPPLY_PROP_TI_REG_STATUS, &val);
+=======
+		pdpm->cp.bat_therm_fault =
+			!!(val.intval & BAT_THERM_FAULT_MASK);
+		pdpm->cp.bus_therm_fault =
+			!!(val.intval & BUS_THERM_FAULT_MASK);
+		pdpm->cp.die_therm_fault =
+			!!(val.intval & DIE_THERM_FAULT_MASK);
+	}
+
+	ret = power_supply_get_property(pdpm->cp_psy,
+					POWER_SUPPLY_PROP_TI_REG_STATUS, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret) {
 		pdpm->cp.vbat_reg = !!(val.intval & VBAT_REG_STATUS_MASK);
 		pdpm->cp.ibat_reg = !!(val.intval & IBAT_REG_STATUS_MASK);
@@ -649,7 +950,13 @@ static void usbpd_pm_update_cp_status(struct usbpd_pm *pdpm)
 static void usbpd_pm_update_cp_sec_status(struct usbpd_pm *pdpm)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	if (!pm_config.cp_sec_enable)
 		return;
@@ -660,12 +967,20 @@ static void usbpd_pm_update_cp_sec_status(struct usbpd_pm *pdpm)
 		return;
 
 	ret = power_supply_get_property(pdpm->cp_sec_psy,
+<<<<<<< HEAD
 			POWER_SUPPLY_PROP_TI_BUS_CURRENT, &val);
+=======
+					POWER_SUPPLY_PROP_TI_BUS_CURRENT, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->cp_sec.ibus_curr = val.intval;
 
 	ret = power_supply_get_property(pdpm->cp_sec_psy,
+<<<<<<< HEAD
 			POWER_SUPPLY_PROP_CHARGE_ENABLED, &val);
+=======
+					POWER_SUPPLY_PROP_CHARGE_ENABLED, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->cp_sec.charge_enabled = val.intval;
 }
@@ -673,7 +988,13 @@ static void usbpd_pm_update_cp_sec_status(struct usbpd_pm *pdpm)
 static int usbpd_pm_enable_cp(struct usbpd_pm *pdpm, bool enable)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	usbpd_check_cp_psy(pdpm);
 
@@ -681,8 +1002,13 @@ static int usbpd_pm_enable_cp(struct usbpd_pm *pdpm, bool enable)
 		return -ENODEV;
 
 	val.intval = enable;
+<<<<<<< HEAD
 	ret = power_supply_set_property(pdpm->cp_psy,
 			POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+=======
+	ret = power_supply_set_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	pr_err("%s enable:%d\n", __func__, enable);
 	return ret;
 }
@@ -690,7 +1016,13 @@ static int usbpd_pm_enable_cp(struct usbpd_pm *pdpm, bool enable)
 static int usbpd_pm_check_cp_bus_ovp(struct usbpd_pm *pdpm, bool enable)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	usbpd_check_cp_sec_psy(pdpm);
 	usbpd_check_cp_psy(pdpm);
@@ -699,6 +1031,7 @@ static int usbpd_pm_check_cp_bus_ovp(struct usbpd_pm *pdpm, bool enable)
 		return -ENODEV;
 
 	val.intval = enable;
+<<<<<<< HEAD
 	ret = power_supply_set_property(pdpm->cp_sec_psy,
 			POWER_SUPPLY_PROP_TI_SET_BUS_PROTECTION_FOR_PD, &val);
 
@@ -706,6 +1039,17 @@ static int usbpd_pm_check_cp_bus_ovp(struct usbpd_pm *pdpm, bool enable)
 
 	ret = power_supply_set_property(pdpm->cp_psy,
 			POWER_SUPPLY_PROP_TI_SET_BUS_PROTECTION_FOR_PD, &val);
+=======
+	ret = power_supply_set_property(
+		pdpm->cp_sec_psy,
+		POWER_SUPPLY_PROP_TI_SET_BUS_PROTECTION_FOR_PD, &val);
+
+	msleep(10);
+
+	ret = power_supply_set_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_TI_SET_BUS_PROTECTION_FOR_PD,
+		&val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	msleep(10);
 
@@ -715,7 +1059,13 @@ static int usbpd_pm_check_cp_bus_ovp(struct usbpd_pm *pdpm, bool enable)
 static int usbpd_pm_enable_cp_sec(struct usbpd_pm *pdpm, bool enable)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	usbpd_check_cp_sec_psy(pdpm);
 
@@ -723,8 +1073,13 @@ static int usbpd_pm_enable_cp_sec(struct usbpd_pm *pdpm, bool enable)
 		return -ENODEV;
 
 	val.intval = enable;
+<<<<<<< HEAD
 	ret = power_supply_set_property(pdpm->cp_sec_psy,
 			POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+=======
+	ret = power_supply_set_property(
+		pdpm->cp_sec_psy, POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	pr_err("%s enable:%d\n", __func__, enable);
 	return ret;
 }
@@ -732,15 +1087,26 @@ static int usbpd_pm_enable_cp_sec(struct usbpd_pm *pdpm, bool enable)
 static int usbpd_pm_check_cp_enabled(struct usbpd_pm *pdpm)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	usbpd_check_cp_psy(pdpm);
 
 	if (!pdpm->cp_psy)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	ret = power_supply_get_property(pdpm->cp_psy,
 			POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+=======
+	ret = power_supply_get_property(
+		pdpm->cp_psy, POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->cp.charge_enabled = !!val.intval;
 
@@ -752,15 +1118,26 @@ static int usbpd_pm_check_cp_enabled(struct usbpd_pm *pdpm)
 static int usbpd_pm_check_cp_sec_enabled(struct usbpd_pm *pdpm)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	usbpd_check_cp_sec_psy(pdpm);
 
 	if (!pdpm->cp_sec_psy)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	ret = power_supply_get_property(pdpm->cp_sec_psy,
 			POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+=======
+	ret = power_supply_get_property(
+		pdpm->cp_sec_psy, POWER_SUPPLY_PROP_CHARGING_ENABLED, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->cp_sec.charge_enabled = !!val.intval;
 	/*pr_info("pdpm->cp_sec.charge_enabled:%d\n", pdpm->cp_sec.charge_enabled);*/
@@ -770,25 +1147,46 @@ static int usbpd_pm_check_cp_sec_enabled(struct usbpd_pm *pdpm)
 static int usbpd_pm_check_sec_batt_present(struct usbpd_pm *pdpm)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	usbpd_check_cp_sec_psy(pdpm);
 
 	if (!pdpm->cp_sec_psy)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	ret = power_supply_get_property(pdpm->cp_sec_psy,
 			POWER_SUPPLY_PROP_TI_BATTERY_PRESENT, &val);
 	if (!ret)
 		pdpm->cp_sec.batt_connecter_present = !!val.intval;
 	pr_info("pdpm->cp_sec.batt_connecter_present:%d\n", pdpm->cp_sec.batt_connecter_present);
+=======
+	ret = power_supply_get_property(
+		pdpm->cp_sec_psy, POWER_SUPPLY_PROP_TI_BATTERY_PRESENT, &val);
+	if (!ret)
+		pdpm->cp_sec.batt_connecter_present = !!val.intval;
+	pr_info("pdpm->cp_sec.batt_connecter_present:%d\n",
+		pdpm->cp_sec.batt_connecter_present);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	return ret;
 }
 
 static int usbpd_pm_enable_sw(struct usbpd_pm *pdpm, bool enable)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	if (!pdpm->sw_psy) {
 		pdpm->sw_psy = power_supply_get_by_name("battery");
@@ -798,8 +1196,13 @@ static int usbpd_pm_enable_sw(struct usbpd_pm *pdpm, bool enable)
 	}
 
 	val.intval = enable;
+<<<<<<< HEAD
 	ret = power_supply_set_property(pdpm->sw_psy,
 			POWER_SUPPLY_PROP_BATTERY_CHARGING_ENABLED, &val);
+=======
+	ret = power_supply_set_property(
+		pdpm->sw_psy, POWER_SUPPLY_PROP_BATTERY_CHARGING_ENABLED, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	return ret;
 }
@@ -807,15 +1210,26 @@ static int usbpd_pm_enable_sw(struct usbpd_pm *pdpm, bool enable)
 static int usbpd_pm_check_night_charging_enabled(struct usbpd_pm *pdpm)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!pdpm->sw_psy) {
 		pdpm->sw_psy = power_supply_get_by_name("battery");
 		if (!pdpm->sw_psy) {
 			return -ENODEV;
 		}
 	}
+<<<<<<< HEAD
 	ret = power_supply_get_property(pdpm->sw_psy,
 			POWER_SUPPLY_PROP_BATTERY_INPUT_SUSPEND, &val);
+=======
+	ret = power_supply_get_property(
+		pdpm->sw_psy, POWER_SUPPLY_PROP_BATTERY_INPUT_SUSPEND, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->sw.night_charging = !!val.intval;
 	return ret;
@@ -824,7 +1238,13 @@ static int usbpd_pm_check_night_charging_enabled(struct usbpd_pm *pdpm)
 static int usbpd_pm_check_sw_enabled(struct usbpd_pm *pdpm)
 {
 	int ret;
+<<<<<<< HEAD
 	union power_supply_propval val = {0,};
+=======
+	union power_supply_propval val = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	if (!pdpm->sw_psy) {
 		pdpm->sw_psy = power_supply_get_by_name("battery");
@@ -833,8 +1253,13 @@ static int usbpd_pm_check_sw_enabled(struct usbpd_pm *pdpm)
 		}
 	}
 
+<<<<<<< HEAD
 	ret = power_supply_get_property(pdpm->sw_psy,
 			POWER_SUPPLY_PROP_BATTERY_CHARGING_ENABLED, &val);
+=======
+	ret = power_supply_get_property(
+		pdpm->sw_psy, POWER_SUPPLY_PROP_BATTERY_CHARGING_ENABLED, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (!ret)
 		pdpm->sw.charge_enabled = !!val.intval;
 
@@ -850,7 +1275,13 @@ static void usbpd_pm_evaluate_src_caps(struct usbpd_pm *pdpm)
 {
 	int ret;
 	int i;
+<<<<<<< HEAD
 	union power_supply_propval pval = {0, };
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	if (!pdpm->pd) {
 		pdpm->pd = smb_get_usbpd();
@@ -870,11 +1301,19 @@ static void usbpd_pm_evaluate_src_caps(struct usbpd_pm *pdpm)
 	pdpm->apdo_max_curr = pm_config.min_adapter_curr_required;
 
 	for (i = 0; i < PDO_MAX_NUM; i++) {
+<<<<<<< HEAD
 		if (pdpm->pdo[i].type == PD_SRC_PDO_TYPE_AUGMENTED
 			&& pdpm->pdo[i].pps && pdpm->pdo[i].pos) {
 			if (pdpm->pdo[i].max_volt_mv >= pdpm->apdo_max_volt
 					&& pdpm->pdo[i].curr_ma >= pdpm->apdo_max_curr
 					&& pdpm->pdo[i].max_volt_mv <= APDO_MAX_VOLT) {
+=======
+		if (pdpm->pdo[i].type == PD_SRC_PDO_TYPE_AUGMENTED &&
+		    pdpm->pdo[i].pps && pdpm->pdo[i].pos) {
+			if (pdpm->pdo[i].max_volt_mv >= pdpm->apdo_max_volt &&
+			    pdpm->pdo[i].curr_ma >= pdpm->apdo_max_curr &&
+			    pdpm->pdo[i].max_volt_mv <= APDO_MAX_VOLT) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 				pdpm->apdo_max_volt = pdpm->pdo[i].max_volt_mv;
 				pdpm->apdo_max_curr = pdpm->pdo[i].curr_ma;
 				pdpm->apdo_selected_pdo = pdpm->pdo[i].pos;
@@ -885,6 +1324,7 @@ static void usbpd_pm_evaluate_src_caps(struct usbpd_pm *pdpm)
 
 	if (pdpm->pps_supported) {
 		pr_info("PPS supported, preferred APDO pos:%d, max volt:%d, current:%d\n",
+<<<<<<< HEAD
 				pdpm->apdo_selected_pdo,
 				pdpm->apdo_max_volt,
 				pdpm->apdo_max_curr);
@@ -893,6 +1333,16 @@ static void usbpd_pm_evaluate_src_caps(struct usbpd_pm *pdpm)
 		pval.intval = (pdpm->apdo_max_volt / 1000) * (pdpm->apdo_max_curr / 1000);
 		power_supply_set_property(pdpm->usb_psy,
 				POWER_SUPPLY_PROP_APDO_MAX, &pval);
+=======
+			pdpm->apdo_selected_pdo, pdpm->apdo_max_volt,
+			pdpm->apdo_max_curr);
+		if (pdpm->apdo_max_curr <= LOW_POWER_PPS_CURR_THR)
+			pdpm->apdo_max_curr = XIAOMI_LOW_POWER_PPS_CURR_MAX;
+		pval.intval = (pdpm->apdo_max_volt / 1000) *
+			      (pdpm->apdo_max_curr / 1000);
+		power_supply_set_property(pdpm->usb_psy,
+					  POWER_SUPPLY_PROP_APDO_MAX, &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	} else {
 		pr_info("Not qualified PPS adapter\n");
 	}
@@ -916,6 +1366,7 @@ static void usbpd_update_pps_status(struct usbpd_pm *pdpm)
 		pdpm->adapter_ptf = ((status >> 24) & 0x06) >> 1;
 		pdpm->adapter_omf = !!((status >> 24) & 0x08);
 		pr_info("adapter_volt:%d, adapter_current:%d\n",
+<<<<<<< HEAD
 				pdpm->adapter_voltage, pdpm->adapter_current);
 		pr_info("pdpm->adapter_ptf:%d, pdpm->adapter_omf:%d\n",
 				pdpm->adapter_ptf, pdpm->adapter_omf);
@@ -923,6 +1374,15 @@ static void usbpd_update_pps_status(struct usbpd_pm *pdpm)
 }
 #define TAPER_TIMEOUT	(10000 / PM_WORK_RUN_QUICK_INTERVAL)
 #define IBUS_CHANGE_TIMEOUT  (1000 / PM_WORK_RUN_QUICK_INTERVAL)
+=======
+			pdpm->adapter_voltage, pdpm->adapter_current);
+		pr_info("pdpm->adapter_ptf:%d, pdpm->adapter_omf:%d\n",
+			pdpm->adapter_ptf, pdpm->adapter_omf);
+	}
+}
+#define TAPER_TIMEOUT (10000 / PM_WORK_RUN_QUICK_INTERVAL)
+#define IBUS_CHANGE_TIMEOUT (1000 / PM_WORK_RUN_QUICK_INTERVAL)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 {
 	int steps;
@@ -959,6 +1419,7 @@ static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 	if (!pdpm->use_qcom_gauge && is_fastcharge_mode) {
 		/*pr_info("pdpm->cp.bms_vbat_mv: %d\n", pdpm->cp.bms_vbat_mv);*/
 		if (pdpm->cp.bms_vbat_mv > pdpm->cell_vol_max_threshold_mv) {
+<<<<<<< HEAD
 			if (pdpm->over_cell_vol_max_count++ > CELL_VOLTAGE_MAX_COUNT_MAX) {
 				pdpm->over_cell_vol_max_count = 0;
 				effective_fcc_taper = usbpd_get_effective_fcc_val(pdpm);
@@ -969,6 +1430,23 @@ static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 					if (effective_fcc_taper >= 2000)
 						vote(pdpm->fcc_votable, BQ_TAPER_FCC_VOTER,
 							true, effective_fcc_taper * 1000);
+=======
+			if (pdpm->over_cell_vol_max_count++ >
+			    CELL_VOLTAGE_MAX_COUNT_MAX) {
+				pdpm->over_cell_vol_max_count = 0;
+				effective_fcc_taper =
+					usbpd_get_effective_fcc_val(pdpm);
+				effective_fcc_taper -=
+					BQ_TAPER_DECREASE_STEP_MA;
+				pr_err("vcell is reached to max threshold, decrease fcc: %d mA\n",
+				       effective_fcc_taper);
+				if (pdpm->fcc_votable) {
+					if (effective_fcc_taper >= 2000)
+						vote(pdpm->fcc_votable,
+						     BQ_TAPER_FCC_VOTER, true,
+						     effective_fcc_taper *
+							     1000);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 				}
 			}
 		} else {
@@ -982,11 +1460,21 @@ static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 	effective_fcc_val = usbpd_get_effective_fcc_val(pdpm);
 
 	if (effective_fcc_val > 0) {
+<<<<<<< HEAD
 		curr_fcc_limit = min(pm_config.bat_curr_lp_lmt, effective_fcc_val);
 		if (pm_config.cp_sec_enable) {
 			/* only master bq works, maxium target fcc should limit to 6A */
 			if (pdpm->no_need_en_slave_bq)
 				curr_fcc_limit = min(curr_fcc_limit, FCC_MAX_MA_FOR_MASTER_BQ);
+=======
+		curr_fcc_limit =
+			min(pm_config.bat_curr_lp_lmt, effective_fcc_val);
+		if (pm_config.cp_sec_enable) {
+			/* only master bq works, maxium target fcc should limit to 6A */
+			if (pdpm->no_need_en_slave_bq)
+				curr_fcc_limit = min(curr_fcc_limit,
+						     FCC_MAX_MA_FOR_MASTER_BQ);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		}
 		curr_ibus_limit = curr_fcc_limit >> 1;
 		/*
@@ -996,9 +1484,17 @@ static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 		curr_ibus_limit += pm_config.bus_curr_compensate;
 		/* curr_ibus_limit should compare with apdo_max_curr here*/
 		curr_ibus_limit = min(curr_ibus_limit, pdpm->apdo_max_curr);
+<<<<<<< HEAD
 		if (pdpm->use_qcom_gauge && curr_ibus_limit == IBUS_MAX_CURRENT_MA) {
 			if (!pdpm->chg_enable_k11a) {
 				curr_ibus_limit += pm_config.bus_curr_compensate;
+=======
+		if (pdpm->use_qcom_gauge &&
+		    curr_ibus_limit == IBUS_MAX_CURRENT_MA) {
+			if (!pdpm->chg_enable_k11a) {
+				curr_ibus_limit +=
+					pm_config.bus_curr_compensate;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			} else {
 				curr_ibus_limit += 30;
 			}
@@ -1009,11 +1505,22 @@ static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 	/* if cell vol read from fuel gauge is higher than threshold, vote saft fcc to protect battery */
 	if (!pdpm->use_qcom_gauge && is_fastcharge_mode) {
 		if (pdpm->cp.bms_vbat_mv > pdpm->cell_vol_high_threshold_mv) {
+<<<<<<< HEAD
 			if (pdpm->over_cell_vol_high_count++ > CELL_VOLTAGE_HIGH_COUNT_MAX) {
 				pdpm->over_cell_vol_high_count = 0;
 				if (pdpm->fcc_votable)
 					vote(pdpm->fcc_votable, BQ_TAPER_CELL_HGIH_FCC_VOTER,
 							true, pdpm->step_charge_high_vol_curr_max * 1000);
+=======
+			if (pdpm->over_cell_vol_high_count++ >
+			    CELL_VOLTAGE_HIGH_COUNT_MAX) {
+				pdpm->over_cell_vol_high_count = 0;
+				if (pdpm->fcc_votable)
+					vote(pdpm->fcc_votable,
+					     BQ_TAPER_CELL_HGIH_FCC_VOTER, true,
+					     pdpm->step_charge_high_vol_curr_max *
+						     1000);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			}
 		} else {
 			pdpm->over_cell_vol_high_count = 0;
@@ -1021,10 +1528,19 @@ static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 	}
 
 	if (!pdpm->use_qcom_gauge) {
+<<<<<<< HEAD
 		if (curr_ibus_limit >= HIGH_IBUS_LIMI_THR_MA && !pdpm->chg_enable_k81)
 			ibus_limit = curr_ibus_limit + IBUS_TARGET_COMP_MA;
 		else if (curr_ibus_limit >= HIGH_IBUS_LIMI_THR_MA && pdpm->chg_enable_k81)
 				ibus_limit = curr_ibus_limit + IBUS_TARGET_COMP_30MA;
+=======
+		if (curr_ibus_limit >= HIGH_IBUS_LIMI_THR_MA &&
+		    !pdpm->chg_enable_k81)
+			ibus_limit = curr_ibus_limit + IBUS_TARGET_COMP_MA;
+		else if (curr_ibus_limit >= HIGH_IBUS_LIMI_THR_MA &&
+			 pdpm->chg_enable_k81)
+			ibus_limit = curr_ibus_limit + IBUS_TARGET_COMP_30MA;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		else
 			ibus_limit = curr_ibus_limit;
 	} else {
@@ -1032,24 +1548,46 @@ static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 	}
 
 	/* reduce bus current in cv loop */
+<<<<<<< HEAD
 	if (pdpm->cp.bms_vbat_mv > (pm_config.bat_volt_lp_lmt - bq_taper_hys_mv)) {
 		if (ibus_lmt_change_timer++ > IBUS_CHANGE_TIMEOUT
 				&& !pdpm->use_qcom_gauge) {
+=======
+	if (pdpm->cp.bms_vbat_mv >
+	    (pm_config.bat_volt_lp_lmt - bq_taper_hys_mv)) {
+		if (ibus_lmt_change_timer++ > IBUS_CHANGE_TIMEOUT &&
+		    !pdpm->use_qcom_gauge) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			ibus_lmt_change_timer = 0;
 			ibus_limit = curr_ibus_limit - 100;
 			effective_fcc_taper = usbpd_get_effective_fcc_val(pdpm);
 			effective_fcc_taper -= BQ_TAPER_DECREASE_STEP_MA;
+<<<<<<< HEAD
 			pr_err("bq set taper fcc to : %d mA\n", effective_fcc_taper);
 			if (pdpm->fcc_votable) {
 				if (effective_fcc_taper >= 2000)
 					vote(pdpm->fcc_votable, BQ_TAPER_FCC_VOTER,
 							true, effective_fcc_taper * 1000);
+=======
+			pr_err("bq set taper fcc to : %d mA\n",
+			       effective_fcc_taper);
+			if (pdpm->fcc_votable) {
+				if (effective_fcc_taper >= 2000)
+					vote(pdpm->fcc_votable,
+					     BQ_TAPER_FCC_VOTER, true,
+					     effective_fcc_taper * 1000);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			}
 		}
 	} else if (pdpm->cp.bms_vbat_mv < pm_config.bat_volt_lp_lmt - 250) {
 		if (!pdpm->use_qcom_gauge) {
 			if (curr_ibus_limit >= HIGH_IBUS_LIMI_THR_MA)
+<<<<<<< HEAD
 				ibus_limit = curr_ibus_limit + IBUS_TARGET_COMP_MA;
+=======
+				ibus_limit =
+					curr_ibus_limit + IBUS_TARGET_COMP_MA;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			else
 				ibus_limit = curr_ibus_limit;
 		} else {
@@ -1138,7 +1676,11 @@ static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 	pr_err("is_temp_out_fc2_range:%d\n", pdpm->is_temp_out_fc2_range);
 
 	if (pdpm->pd_active == POWER_SUPPLY_PPS_NON_VERIFIED &&
+<<<<<<< HEAD
 		pdpm->cp.ibat_curr > MAX_UNSUPPORT_PPS_CURRENT_MA) {
+=======
+	    pdpm->cp.ibat_curr > MAX_UNSUPPORT_PPS_CURRENT_MA) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		pdpm->unsupport_pps_ta_check_count++;
 		if (pdpm->unsupport_pps_ta_check_count > 3)
 			unsupport_pps_status = true;
@@ -1151,6 +1693,7 @@ static int usbpd_pm_fc2_charge_algo(struct usbpd_pm *pdpm)
 		pd_log_count_poussin = 0;
 		pr_err("michglog:batt[%d-%d-%d-%d-%d-%d],bus[%d-%d-%d-%d-%d-%d-%d],chgmode[%d-%d-%d-%d],therm[%d-%d-%d-%d-%d], \
 reg[%d-%d-%d-%d-%d],step[%d-%d-%d-%d-%d-%d-%d-%d],pmconfig[%d-%d-%d,%d-%d-%d-%d][%d-%d-%d-%d-%d]\n",
+<<<<<<< HEAD
 		pdpm->cp.batt_pres, pdpm->cp.bms_batt_temp, capacity, pdpm->cp.bms_vbat_mv, pdpm->cp.vbat_volt, pdpm->cp.ibat_curr,
 		pdpm->cp.vbus_pres, pdpm->request_voltage, pdpm->cp.vbus_volt, ibus_total, pdpm->cp.ibus_curr, pdpm->cp_sec.ibus_curr, ibus_limit, \
 		is_fastcharge_mode, pdpm->cp.charge_enabled, pdpm->cp_sec.charge_enabled, effective_fcc_taper, \
@@ -1162,6 +1705,31 @@ reg[%d-%d-%d-%d-%d],step[%d-%d-%d-%d-%d-%d-%d-%d],pmconfig[%d-%d-%d,%d-%d-%d-%d]
 		pm_config.min_adapter_curr_required, pm_config.fc2_taper_current, pm_config.fc2_steps, pm_config.fc2_disable_sw, \
 		pm_config.bus_volt_lp_lmt, pm_config.bat_volt_lp_lmt, pm_config.min_adapter_volt_required, \
 		pm_config.min_vbat_for_cp, pm_config.cp_sec_enable);
+=======
+		       pdpm->cp.batt_pres, pdpm->cp.bms_batt_temp, capacity,
+		       pdpm->cp.bms_vbat_mv, pdpm->cp.vbat_volt,
+		       pdpm->cp.ibat_curr, pdpm->cp.vbus_pres,
+		       pdpm->request_voltage, pdpm->cp.vbus_volt, ibus_total,
+		       pdpm->cp.ibus_curr, pdpm->cp_sec.ibus_curr, ibus_limit,
+		       is_fastcharge_mode, pdpm->cp.charge_enabled,
+		       pdpm->cp_sec.charge_enabled, effective_fcc_taper,
+		       thermal_level, pdpm->cp.bus_temp, pdpm->cp.die_temp,
+		       pdpm->is_temp_out_fc2_range, pdpm->cp.bat_therm_fault,
+		       pdpm->cp.vbat_reg, step_bat_reg, step_ibus,
+		       pdpm->cp.ibat_reg, step_ibat, sw_ctrl_steps,
+		       hw_ctrl_steps, pdpm->use_qcom_gauge,
+		       pdpm->cell_vol_max_threshold_mv,
+		       pdpm->over_cell_vol_max_count, pdpm->sw.night_charging,
+		       pdpm->cp.bms_chip_ok, pdpm->cp.bq_input_suspend,
+		       pm_config.bus_curr_lp_lmt, pm_config.bat_curr_lp_lmt,
+		       pm_config.bus_curr_compensate,
+		       pm_config.min_adapter_curr_required,
+		       pm_config.fc2_taper_current, pm_config.fc2_steps,
+		       pm_config.fc2_disable_sw, pm_config.bus_volt_lp_lmt,
+		       pm_config.bat_volt_lp_lmt,
+		       pm_config.min_adapter_volt_required,
+		       pm_config.min_vbat_for_cp, pm_config.cp_sec_enable);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 
 	usbpd_pm_check_night_charging_enabled(pdpm);
@@ -1170,6 +1738,7 @@ reg[%d-%d-%d-%d-%d],step[%d-%d-%d-%d-%d-%d-%d-%d],pmconfig[%d-%d-%d,%d-%d-%d-%d]
 		pr_err("bat_therm_fault:%d\n", pdpm->cp.bat_therm_fault);
 		return PM_ALGO_RET_THERM_FAULT;
 	} else if (!pdpm->cp.charge_enabled ||
+<<<<<<< HEAD
 		(pm_config.cp_sec_enable && !pdpm->cp_sec.charge_enabled && !pdpm->no_need_en_slave_bq)) {
 		pr_err("cp.charge_enabled:%d, cp_sec.charge_enabled:%d\n",
 			pdpm->cp.charge_enabled, pdpm->cp_sec.charge_enabled);
@@ -1185,6 +1754,28 @@ reg[%d-%d-%d-%d-%d],step[%d-%d-%d-%d-%d-%d-%d-%d],pmconfig[%d-%d-%d,%d-%d-%d-%d]
 		return PM_ALGO_RET_OTHER_FAULT; /* go to switch, and try to ramp up*/
 	} else if (pm_config.cp_sec_enable && pdpm->no_need_en_slave_bq
 			&& pdpm->cp.charge_enabled && pdpm->cp.ibus_curr < CRITICAL_LOW_IBUS_THR) {
+=======
+		   (pm_config.cp_sec_enable && !pdpm->cp_sec.charge_enabled &&
+		    !pdpm->no_need_en_slave_bq)) {
+		pr_err("cp.charge_enabled:%d, cp_sec.charge_enabled:%d\n",
+		       pdpm->cp.charge_enabled, pdpm->cp_sec.charge_enabled);
+		return PM_ALGO_RET_CHG_DISABLED;
+	} else if (thermal_level >= pdpm->therm_level_threshold ||
+		   pdpm->is_temp_out_fc2_range) {
+		pr_err("thermal level too high:%d\n", thermal_level);
+		return PM_ALGO_RET_CHG_DISABLED;
+	} else if (pdpm->cp.bat_ocp_fault || pdpm->cp.bus_ocp_fault ||
+		   pdpm->cp.bat_ovp_fault || pdpm->cp.bus_ovp_fault ||
+		   pdpm->bms_i2c_error_count) {
+		pr_err("bat_ocp_fault:%d, bus_ocp_fault:%d, bat_ovp_fault:%d, bus_ovp_fault:%d,bms_i2c_error_count:%d\n",
+		       pdpm->cp.bat_ocp_fault, pdpm->cp.bus_ocp_fault,
+		       pdpm->cp.bat_ovp_fault, pdpm->cp.bus_ovp_fault,
+		       pdpm->bms_i2c_error_count);
+		return PM_ALGO_RET_OTHER_FAULT; /* go to switch, and try to ramp up*/
+	} else if (pm_config.cp_sec_enable && pdpm->no_need_en_slave_bq &&
+		   pdpm->cp.charge_enabled &&
+		   pdpm->cp.ibus_curr < CRITICAL_LOW_IBUS_THR) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (pdpm->master_ibus_below_critical_low_count++ >= 5) {
 			pr_err("master ibus below critical low but still enabled\n");
 			pdpm->master_ibus_below_critical_low_count = 0;
@@ -1200,6 +1791,7 @@ reg[%d-%d-%d-%d-%d],step[%d-%d-%d-%d-%d-%d-%d-%d],pmconfig[%d-%d-%d,%d-%d-%d-%d]
 		return PM_ALGO_RET_NIGHT_CHARGING;
 	}
 
+<<<<<<< HEAD
 	if (pdpm->cp.bms_vbat_mv > pm_config.bat_volt_lp_lmt - TAPER_VOL_HYS
 			&& pdpm->cp.ibat_curr < pm_config.fc2_taper_current) {
 			if (fc2_taper_timer++ > TAPER_TIMEOUT) {
@@ -1207,6 +1799,15 @@ reg[%d-%d-%d-%d-%d],step[%d-%d-%d-%d-%d-%d-%d-%d],pmconfig[%d-%d-%d,%d-%d-%d-%d]
 				fc2_taper_timer = 0;
 				return PM_ALGO_RET_TAPER_DONE;
 			}
+=======
+	if (pdpm->cp.bms_vbat_mv > pm_config.bat_volt_lp_lmt - TAPER_VOL_HYS &&
+	    pdpm->cp.ibat_curr < pm_config.fc2_taper_current) {
+		if (fc2_taper_timer++ > TAPER_TIMEOUT) {
+			pr_err("charge pump taper charging done\n");
+			fc2_taper_timer = 0;
+			return PM_ALGO_RET_TAPER_DONE;
+		}
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	} else {
 		fc2_taper_timer = 0;
 	}
@@ -1227,12 +1828,25 @@ reg[%d-%d-%d-%d-%d],step[%d-%d-%d-%d-%d-%d-%d-%d],pmconfig[%d-%d-%d,%d-%d-%d-%d]
 
 	if (pdpm->request_voltage > pdpm->apdo_max_volt)
 		pdpm->request_voltage = pdpm->apdo_max_volt;
+<<<<<<< HEAD
 	if(steps < 0) {
 		pr_err("steps[%d-%d-%d-%d-%d-%d-%d],request[%d-%d-%d-%d]ibus[%d-%d-%d-%d]cp[%d-%d-%d-%d-%d]\n",
 		steps, sw_ctrl_steps, hw_ctrl_steps, step_ibus, step_ibat, step_vbat, step_bat_reg, \
 		pdpm->request_voltage, pdpm->cp.vbus_volt, pdpm->request_current, ibus_total, \
 		ibus_limit, curr_ibus_limit, pdpm->cp.ibus_curr, pdpm->cp_sec.ibus_curr, \
 		pdpm->cp.vbat_volt, pdpm->cp.bms_vbat_mv, pdpm->cp.ibat_curr, pdpm->cp.vbat_reg, pdpm->cp.ibat_reg);
+=======
+	if (steps < 0) {
+		pr_err("steps[%d-%d-%d-%d-%d-%d-%d],request[%d-%d-%d-%d]ibus[%d-%d-%d-%d]cp[%d-%d-%d-%d-%d]\n",
+		       steps, sw_ctrl_steps, hw_ctrl_steps, step_ibus,
+		       step_ibat, step_vbat, step_bat_reg,
+		       pdpm->request_voltage, pdpm->cp.vbus_volt,
+		       pdpm->request_current, ibus_total, ibus_limit,
+		       curr_ibus_limit, pdpm->cp.ibus_curr,
+		       pdpm->cp_sec.ibus_curr, pdpm->cp.vbat_volt,
+		       pdpm->cp.bms_vbat_mv, pdpm->cp.ibat_curr,
+		       pdpm->cp.vbat_reg, pdpm->cp.ibat_reg);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 	/*if (pdpm->adapter_voltage > 0
 			&& pdpm->request_voltage > pdpm->adapter_voltage + 500)
@@ -1242,20 +1856,30 @@ reg[%d-%d-%d-%d-%d],step[%d-%d-%d-%d-%d-%d-%d-%d],pmconfig[%d-%d-%d,%d-%d-%d-%d]
 }
 
 static const unsigned char *pm_str[] = {
+<<<<<<< HEAD
 	"PD_PM_STATE_ENTRY",
 	"PD_PM_STATE_FC2_ENTRY",
 	"PD_PM_STATE_FC2_ENTRY_1",
 	"PD_PM_STATE_FC2_ENTRY_2",
 	"PD_PM_STATE_FC2_ENTRY_3",
 	"PD_PM_STATE_FC2_TUNE",
+=======
+	"PD_PM_STATE_ENTRY",	   "PD_PM_STATE_FC2_ENTRY",
+	"PD_PM_STATE_FC2_ENTRY_1", "PD_PM_STATE_FC2_ENTRY_2",
+	"PD_PM_STATE_FC2_ENTRY_3", "PD_PM_STATE_FC2_TUNE",
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	"PD_PM_STATE_FC2_EXIT",
 };
 
 static void usbpd_pm_move_state(struct usbpd_pm *pdpm, enum pm_state state)
 {
 #if 1
+<<<<<<< HEAD
 	pr_info("state change:%s -> %s\n",
 		pm_str[pdpm->state], pm_str[state]);
+=======
+	pr_info("state change:%s -> %s\n", pm_str[pdpm->state], pm_str[state]);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 #endif
 	pdpm->state = state;
 }
@@ -1269,7 +1893,11 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 	static bool recover;
 	int effective_fcc_val = 0;
 	int thermal_level = 0, capacity;
+<<<<<<< HEAD
 	static int curr_fcc_lmt, curr_ibus_lmt,retry_count;
+=======
+	static int curr_fcc_lmt, curr_ibus_lmt, retry_count;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	switch (pdpm->state) {
 	case PD_PM_STATE_ENTRY:
@@ -1280,6 +1908,7 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 		/* update new fcc from bms charge current */
 		usbpd_set_new_fcc_voter(pdpm);
 		pd_get_batt_current_thermal_level(pdpm, &thermal_level);
+<<<<<<< HEAD
 		pdpm->is_temp_out_fc2_range = pd_disable_cp_by_jeita_status(pdpm);
 		usbpd_pm_check_sec_batt_present(pdpm);
 		pr_err("is_temp_out_fc2_range:%d\n", pdpm->is_temp_out_fc2_range);
@@ -1289,11 +1918,26 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 
 		if (effective_fcc_val > 0) {
 			curr_fcc_lmt = min(pm_config.bat_curr_lp_lmt, effective_fcc_val);
+=======
+		pdpm->is_temp_out_fc2_range =
+			pd_disable_cp_by_jeita_status(pdpm);
+		usbpd_pm_check_sec_batt_present(pdpm);
+		pr_err("is_temp_out_fc2_range:%d\n",
+		       pdpm->is_temp_out_fc2_range);
+		pd_get_batt_capacity(pdpm, &capacity);
+		usbpd_pm_check_cp_bus_ovp(pdpm, 1);
+		effective_fcc_val = usbpd_get_effective_fcc_val(pdpm);
+
+		if (effective_fcc_val > 0) {
+			curr_fcc_lmt = min(pm_config.bat_curr_lp_lmt,
+					   effective_fcc_val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			curr_ibus_lmt = curr_fcc_lmt >> 1;
 			pr_info("curr_ibus_lmt:%d\n", curr_ibus_lmt);
 		}
 
 		if (pdpm->cp.vbat_volt < pm_config.min_vbat_for_cp) {
+<<<<<<< HEAD
 			pr_err("batt_volt %d, waiting...\n", pdpm->cp.vbat_volt);
 		} else if ((pdpm->cp.vbat_volt > pm_config.bat_volt_lp_lmt - VBAT_HIGH_FOR_FC_HYS_MV
 			&& !pdpm->is_temp_out_fc2_range) || capacity >= CAPACITY_TOO_HIGH_THR) {
@@ -1310,11 +1954,40 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 		} else if (effective_fcc_val < START_DRIECT_CHARGE_FCC_MIN_THR) {
 			pr_err("effective fcc is below start dc threshold, waiting...\n");
 		} else if (pdpm->cp_sec_enable && !pdpm->cp_sec.batt_connecter_present) {
+=======
+			pr_err("batt_volt %d, waiting...\n",
+			       pdpm->cp.vbat_volt);
+		} else if ((pdpm->cp.vbat_volt >
+				    pm_config.bat_volt_lp_lmt -
+					    VBAT_HIGH_FOR_FC_HYS_MV &&
+			    !pdpm->is_temp_out_fc2_range) ||
+			   capacity >= CAPACITY_TOO_HIGH_THR) {
+			pr_err("batt_volt %d is too high for cp,\
+					charging with switch charger\n",
+			       pdpm->cp.vbat_volt);
+			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_EXIT);
+		} else if (!pd_get_bms_digest_verified(pdpm)) {
+			pr_err("bms digest is not verified, waiting...\n");
+		} else if (thermal_level >= pdpm->therm_level_threshold ||
+			   pdpm->is_temp_out_fc2_range) {
+			pr_err("thermal level is too high, waiting...\n");
+		} else if (pdpm->sw.night_charging) {
+			pr_err("night charging is open, waiting...\n");
+		} else if (effective_fcc_val <
+			   START_DRIECT_CHARGE_FCC_MIN_THR) {
+			pr_err("effective fcc is below start dc threshold, waiting...\n");
+		} else if (pdpm->cp_sec_enable &&
+			   !pdpm->cp_sec.batt_connecter_present) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			pr_err("sec batt connecter miss! charging with switch charger\n");
 			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_EXIT);
 		} else {
 			pr_err("batt_volt-%d is ok, start flash charging\n",
+<<<<<<< HEAD
 					pdpm->cp.vbat_volt);
+=======
+			       pdpm->cp.vbat_volt);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_ENTRY);
 		}
 		break;
@@ -1326,21 +1999,38 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 				usbpd_pm_check_sw_enabled(pdpm);
 			}
 			if (!pdpm->sw.charge_enabled)
+<<<<<<< HEAD
 				usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_ENTRY_1);
+=======
+				usbpd_pm_move_state(pdpm,
+						    PD_PM_STATE_FC2_ENTRY_1);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		} else {
 			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_ENTRY_1);
 		}
 		break;
 
 	case PD_PM_STATE_FC2_ENTRY_1:
+<<<<<<< HEAD
 		pdpm->request_voltage = pdpm->cp.vbat_volt * 2 + BUS_VOLT_INIT_UP;
+=======
+		pdpm->request_voltage =
+			pdpm->cp.vbat_volt * 2 + BUS_VOLT_INIT_UP;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		//pdpm->request_current = min(pdpm->apdo_max_curr, pm_config.bus_curr_lp_lmt);
 		pdpm->request_current = min(pdpm->apdo_max_curr, curr_ibus_lmt);
 
 		usbpd_select_pdo(pdpm->pd, pdpm->apdo_selected_pdo,
+<<<<<<< HEAD
 				pdpm->request_voltage * 1000, pdpm->request_current * 1000);
 		pr_err("request_voltage:%d, request_current:%d\n",
 				pdpm->request_voltage, pdpm->request_current);
+=======
+				 pdpm->request_voltage * 1000,
+				 pdpm->request_current * 1000);
+		pr_err("request_voltage:%d, request_current:%d\n",
+		       pdpm->request_voltage, pdpm->request_current);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 		usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_ENTRY_2);
 
@@ -1348,6 +2038,7 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 		break;
 
 	case PD_PM_STATE_FC2_ENTRY_2:
+<<<<<<< HEAD
 		if (pdpm->cp.vbus_volt < (pdpm->cp.vbat_volt * 2 + BUS_VOLT_INIT_UP - 50)) {
 			tune_vbus_retry++;
 			pdpm->request_voltage += STEP_MV_INIT_VBUS;
@@ -1362,6 +2053,25 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 						pdpm->request_current * 1000);
 		} else {
 			pr_err("adapter volt tune ok, retry %d times\n", tune_vbus_retry);
+=======
+		if (pdpm->cp.vbus_volt <
+		    (pdpm->cp.vbat_volt * 2 + BUS_VOLT_INIT_UP - 50)) {
+			tune_vbus_retry++;
+			pdpm->request_voltage += STEP_MV_INIT_VBUS;
+			usbpd_select_pdo(pdpm->pd, pdpm->apdo_selected_pdo,
+					 pdpm->request_voltage * 1000,
+					 pdpm->request_current * 1000);
+		} else if (pdpm->cp.vbus_volt >
+			   (pdpm->cp.vbat_volt * 2 + BUS_VOLT_INIT_UP + 200)) {
+			tune_vbus_retry++;
+			pdpm->request_voltage -= STEP_MV_INIT_VBUS;
+			usbpd_select_pdo(pdpm->pd, pdpm->apdo_selected_pdo,
+					 pdpm->request_voltage * 1000,
+					 pdpm->request_current * 1000);
+		} else {
+			pr_err("adapter volt tune ok, retry %d times\n",
+			       tune_vbus_retry);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_ENTRY_3);
 			break;
 		}
@@ -1385,8 +2095,13 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 		if (pm_config.cp_sec_enable && !pdpm->cp_sec.charge_enabled) {
 			pd_get_batt_current_thermal_level(pdpm, &thermal_level);
 			pd_get_batt_capacity(pdpm, &capacity);
+<<<<<<< HEAD
 			if (thermal_level < MAX_THERMAL_LEVEL_FOR_DUAL_BQ
 					&& capacity < CAPACITY_HIGH_THR) {
+=======
+			if (thermal_level < MAX_THERMAL_LEVEL_FOR_DUAL_BQ &&
+			    capacity < CAPACITY_HIGH_THR) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 				pr_err("%s ENTRY_3 enable_cp_sec\n", __func__);
 				usbpd_pm_enable_cp_sec(pdpm, true);
 				msleep(30);
@@ -1399,8 +2114,13 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 		if (pm_config.cp_sec_enable && !pdpm->cp_sec.charge_enabled) {
 			pd_get_batt_current_thermal_level(pdpm, &thermal_level);
 			pd_get_batt_capacity(pdpm, &capacity);
+<<<<<<< HEAD
 			if (thermal_level < MAX_THERMAL_LEVEL_FOR_DUAL_BQ
 					&& capacity < CAPACITY_HIGH_THR)
+=======
+			if (thermal_level < MAX_THERMAL_LEVEL_FOR_DUAL_BQ &&
+			    capacity < CAPACITY_HIGH_THR)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 				usbpd_pm_enable_cp_sec(pdpm, true);
 			else
 				pdpm->no_need_en_slave_bq = true;
@@ -1412,6 +2132,7 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 #endif
 		usbpd_pm_check_cp_sec_enabled(pdpm);
 		usbpd_pm_check_cp_enabled(pdpm);
+<<<<<<< HEAD
 		if ((!pdpm->cp_sec.charge_enabled && pm_config.cp_sec_enable
 				&& !pdpm->no_need_en_slave_bq) || !pdpm->cp.charge_enabled)
 			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_ENTRY_3);
@@ -1421,6 +2142,19 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 					&& !pdpm->no_need_en_slave_bq)
 					|| pdpm->no_need_en_slave_bq
 					|| !pm_config.cp_sec_enable) {
+=======
+		if ((!pdpm->cp_sec.charge_enabled && pm_config.cp_sec_enable &&
+		     !pdpm->no_need_en_slave_bq) ||
+		    !pdpm->cp.charge_enabled)
+			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_ENTRY_3);
+
+		if (pdpm->cp.charge_enabled) {
+			if ((pm_config.cp_sec_enable &&
+			     pdpm->cp_sec.charge_enabled &&
+			     !pdpm->no_need_en_slave_bq) ||
+			    pdpm->no_need_en_slave_bq ||
+			    !pm_config.cp_sec_enable) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 				usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_TUNE);
 				ibus_lmt_change_timer = 0;
 				fc2_taper_timer = 0;
@@ -1444,6 +2178,7 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_EXIT);
 			break;
 		} else if (usbpd_get_current_state(pdpm->pd) == 1) {
+<<<<<<< HEAD
 				pr_err("adapter receive softreset\n");
 				//ln8000
 				pr_err("close dual ln8000\n");
@@ -1456,12 +2191,30 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 		} else if (ret == PM_ALGO_RET_OTHER_FAULT
 				|| ret == PM_ALGO_RET_TAPER_DONE
 				|| ret == PM_ALGO_RET_UNSUPPORT_PPSTA) {
+=======
+			pr_err("adapter receive softreset\n");
+			//ln8000
+			pr_err("close dual ln8000\n");
+			usbpd_pm_enable_cp_sec(pdpm, false);
+			usbpd_pm_enable_cp(pdpm, false);
+			//ln8000
+			usbpd_pm_evaluate_src_caps(pdpm);
+			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_ENTRY_1);
+			break;
+		} else if (ret == PM_ALGO_RET_OTHER_FAULT ||
+			   ret == PM_ALGO_RET_TAPER_DONE ||
+			   ret == PM_ALGO_RET_UNSUPPORT_PPSTA) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			pr_err("Move to switch charging:%d\n", ret);
 			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_EXIT);
 			break;
 		} else if (ret == PM_ALGO_RET_CHG_DISABLED) {
 			pr_err("Move to switch charging, will try to recover flash charging:%d\n",
+<<<<<<< HEAD
 					ret);
+=======
+			       ret);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			recover = true;
 			usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_EXIT);
 			break;
@@ -1477,6 +2230,7 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 				usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_EXIT);
 			}
 		} else {
+<<<<<<< HEAD
 			ret = usbpd_select_pdo(pdpm->pd, pdpm->apdo_selected_pdo,
 						pdpm->request_voltage * 1000,
 						pdpm->request_current * 1000);
@@ -1485,6 +2239,17 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 			} else if(retry_count > 3){		
 				pr_err("CC conminucation failed, will try to recover flash charging:%d\n",
 						ret);
+=======
+			ret = usbpd_select_pdo(pdpm->pd,
+					       pdpm->apdo_selected_pdo,
+					       pdpm->request_voltage * 1000,
+					       pdpm->request_current * 1000);
+			if (ret == -EBUSY && retry_count <= 3) {
+				retry_count++;
+			} else if (retry_count > 3) {
+				pr_err("CC conminucation failed, will try to recover flash charging:%d\n",
+				       ret);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 				retry_count = 0;
 				recover = true;
 				usbpd_pm_move_state(pdpm, PD_PM_STATE_FC2_EXIT);
@@ -1496,9 +2261,18 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 					pdpm->request_voltage, pdpm->request_current);*/
 		}
 		/*stop second charge pump if either of ibus is lower than 400ma during CV*/
+<<<<<<< HEAD
 		if (pm_config.cp_sec_enable && pdpm->cp_sec.charge_enabled && !pdpm->no_need_en_slave_bq
 				&& pdpm->cp.vbat_volt > pm_config.bat_volt_lp_lmt - TAPER_WITH_IBUS_HYS
 				&& (pdpm->cp.ibus_curr < TAPER_IBUS_THR || pdpm->cp_sec.ibus_curr < TAPER_IBUS_THR)) {
+=======
+		if (pm_config.cp_sec_enable && pdpm->cp_sec.charge_enabled &&
+		    !pdpm->no_need_en_slave_bq &&
+		    pdpm->cp.vbat_volt >
+			    pm_config.bat_volt_lp_lmt - TAPER_WITH_IBUS_HYS &&
+		    (pdpm->cp.ibus_curr < TAPER_IBUS_THR ||
+		     pdpm->cp_sec.ibus_curr < TAPER_IBUS_THR)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			pr_err("second cp is disabled due to ibus < 450mA\n");
 			usbpd_pm_enable_cp_sec(pdpm, false);
 			usbpd_pm_check_cp_sec_enabled(pdpm);
@@ -1513,10 +2287,16 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 		pdpm->chip_ok_count = 0;
 
 		if (pdpm->fcc_votable) {
+<<<<<<< HEAD
 			vote(pdpm->fcc_votable, BQ_TAPER_FCC_VOTER,
 					false, 0);
 			vote(pdpm->fcc_votable, BQ_TAPER_CELL_HGIH_FCC_VOTER,
 					false, 0);
+=======
+			vote(pdpm->fcc_votable, BQ_TAPER_FCC_VOTER, false, 0);
+			vote(pdpm->fcc_votable, BQ_TAPER_CELL_HGIH_FCC_VOTER,
+			     false, 0);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		}
 
 		if (stop_sw && pdpm->sw.charge_enabled)
@@ -1528,7 +2308,12 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 		usbpd_pm_check_sw_enabled(pdpm);
 #if defined(CONFIG_BQ2597X_CHARGE_PUMP_STANDALONE_MUNCH)
 		if (pm_config.cp_sec_enable && pdpm->cp_sec.charge_enabled) {
+<<<<<<< HEAD
 			pr_err("%s PD_PM_STATE_FC2_EXIT cp_sec close\n", __func__);
+=======
+			pr_err("%s PD_PM_STATE_FC2_EXIT cp_sec close\n",
+			       __func__);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			usbpd_pm_enable_cp_sec(pdpm, false);
 			usbpd_pm_check_cp_sec_enabled(pdpm);
 		}
@@ -1545,7 +2330,12 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 		}
 
 		if (pm_config.cp_sec_enable && pdpm->cp_sec.charge_enabled) {
+<<<<<<< HEAD
 			pr_err("%s PD_PM_STATE_FC2_EXIT cp_secclose\n", __func__);
+=======
+			pr_err("%s PD_PM_STATE_FC2_EXIT cp_secclose\n",
+			       __func__);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			usbpd_pm_enable_cp_sec(pdpm, false);
 			usbpd_pm_check_cp_sec_enabled(pdpm);
 		}
@@ -1567,8 +2357,13 @@ static int usbpd_pm_sm(struct usbpd_pm *pdpm)
 
 static void usbpd_pm_workfunc(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct usbpd_pm *pdpm = container_of(work, struct usbpd_pm,
 					pm_work.work);
+=======
+	struct usbpd_pm *pdpm =
+		container_of(work, struct usbpd_pm, pm_work.work);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	int internal = PM_WORK_RUN_NORMAL_INTERVAL;
 
 	usbpd_pm_update_sw_status(pdpm);
@@ -1576,25 +2371,43 @@ static void usbpd_pm_workfunc(struct work_struct *work)
 	usbpd_pm_update_cp_sec_status(pdpm);
 
 	if (!usbpd_pm_sm(pdpm) && pdpm->pd_active) {
+<<<<<<< HEAD
 		if (pdpm->cp.vbat_volt >= CRITICAL_HIGH_VOL_THR_MV
 				&& pm_config.cp_sec_enable)
+=======
+		if (pdpm->cp.vbat_volt >= CRITICAL_HIGH_VOL_THR_MV &&
+		    pm_config.cp_sec_enable)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 			internal = PM_WORK_RUN_CRITICAL_INTERVAL;
 		else if (pdpm->cp.vbat_volt >= HIGH_VOL_THR_MV)
 			internal = PM_WORK_RUN_QUICK_INTERVAL;
 		else
 			internal = PM_WORK_RUN_NORMAL_INTERVAL;
 		schedule_delayed_work(&pdpm->pm_work,
+<<<<<<< HEAD
 				msecs_to_jiffies(internal));
+=======
+				      msecs_to_jiffies(internal));
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 }
 
 static void usbpd_pm_disconnect(struct usbpd_pm *pdpm)
 {
+<<<<<<< HEAD
 	union power_supply_propval pval = {0, };
 
 	cancel_delayed_work_sync(&pdpm->pm_work);
 
 
+=======
+	union power_supply_propval pval = {
+		0,
+	};
+
+	cancel_delayed_work_sync(&pdpm->pm_work);
+
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 #if defined(CONFIG_BQ2597X_CHARGE_PUMP_STANDALONE_MUNCH)
 	pr_err("%s cp close\n", __func__);
 	usbpd_pm_enable_cp_sec(pdpm, false);
@@ -1605,10 +2418,15 @@ static void usbpd_pm_disconnect(struct usbpd_pm *pdpm)
 #endif
 
 	if (pdpm->fcc_votable) {
+<<<<<<< HEAD
 		vote(pdpm->fcc_votable, BQ_TAPER_FCC_VOTER,
 				false, 0);
 		vote(pdpm->fcc_votable, BQ_TAPER_CELL_HGIH_FCC_VOTER,
 				false, 0);
+=======
+		vote(pdpm->fcc_votable, BQ_TAPER_FCC_VOTER, false, 0);
+		vote(pdpm->fcc_votable, BQ_TAPER_CELL_HGIH_FCC_VOTER, false, 0);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 	pdpm->pps_supported = false;
 	pdpm->jeita_triggered = false;
@@ -1625,8 +2443,13 @@ static void usbpd_pm_disconnect(struct usbpd_pm *pdpm)
 	pm_config.fc2_taper_current = TAPER_DONE_NORMAL_MA;
 
 	pval.intval = 0;
+<<<<<<< HEAD
 	power_supply_set_property(pdpm->usb_psy,
 			POWER_SUPPLY_PROP_APDO_MAX, &pval);
+=======
+	power_supply_set_property(pdpm->usb_psy, POWER_SUPPLY_PROP_APDO_MAX,
+				  &pval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	usbpd_pm_move_state(pdpm, PD_PM_STATE_ENTRY);
 }
 
@@ -1650,7 +2473,11 @@ static void usbpd_pps_non_verified_contact(struct usbpd_pm *pdpm, int status)
 	if (status) {
 		usbpd_pm_evaluate_src_caps(pdpm);
 		if (pdpm->pps_supported)
+<<<<<<< HEAD
 			schedule_delayed_work(&pdpm->pm_work, 5*HZ);
+=======
+			schedule_delayed_work(&pdpm->pm_work, 5 * HZ);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	} else {
 		usbpd_pm_disconnect(pdpm);
 		if (pdpm->fcc_votable)
@@ -1660,8 +2487,13 @@ static void usbpd_pps_non_verified_contact(struct usbpd_pm *pdpm, int status)
 
 static void cp_psy_change_work(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct usbpd_pm *pdpm = container_of(work, struct usbpd_pm,
 					cp_psy_change_work);
+=======
+	struct usbpd_pm *pdpm =
+		container_of(work, struct usbpd_pm, cp_psy_change_work);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 #if 0
 	union power_supply_propval val = {0,};
 	bool ac_pres = pdpm->cp.vbus_pres;
@@ -1682,6 +2514,7 @@ static void cp_psy_change_work(struct work_struct *work)
 
 static void usb_psy_change_work(struct work_struct *work)
 {
+<<<<<<< HEAD
 	struct usbpd_pm *pdpm = container_of(work, struct usbpd_pm,
 					usb_psy_change_work);
 	union power_supply_propval val = {0,};
@@ -1690,38 +2523,78 @@ static void usb_psy_change_work(struct work_struct *work)
 
 	ret = power_supply_get_property(pdpm->usb_psy,
 			POWER_SUPPLY_PROP_TYPEC_POWER_ROLE, &val);
+=======
+	struct usbpd_pm *pdpm =
+		container_of(work, struct usbpd_pm, usb_psy_change_work);
+	union power_supply_propval val = {
+		0,
+	};
+	union power_supply_propval pd_auth_val = {
+		0,
+	};
+	int ret = 0;
+
+	ret = power_supply_get_property(
+		pdpm->usb_psy, POWER_SUPPLY_PROP_TYPEC_POWER_ROLE, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (ret) {
 		pr_err("Failed to read typec power role\n");
 		goto out;
 	}
 
 	if (val.intval != POWER_SUPPLY_TYPEC_PR_SINK &&
+<<<<<<< HEAD
 			val.intval != POWER_SUPPLY_TYPEC_PR_DUAL)
 		goto out;
 
 	ret = power_supply_get_property(pdpm->usb_psy,
 			POWER_SUPPLY_PROP_PD_ACTIVE, &val);
+=======
+	    val.intval != POWER_SUPPLY_TYPEC_PR_DUAL)
+		goto out;
+
+	ret = power_supply_get_property(pdpm->usb_psy,
+					POWER_SUPPLY_PROP_PD_ACTIVE, &val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (ret) {
 		pr_err("Failed to get usb pd active state\n");
 		goto out;
 	}
 
 	ret = power_supply_get_property(pdpm->usb_psy,
+<<<<<<< HEAD
 				POWER_SUPPLY_PROP_PD_AUTHENTICATION, &pd_auth_val);
+=======
+					POWER_SUPPLY_PROP_PD_AUTHENTICATION,
+					&pd_auth_val);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (ret) {
 		pr_err("Failed to read typec power role\n");
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if ((pdpm->pd_active < POWER_SUPPLY_PPS_VERIFIED) && (pd_auth_val.intval == 1)
 			&& (val.intval == POWER_SUPPLY_PD_PPS_ACTIVE)) {
+=======
+	if ((pdpm->pd_active < POWER_SUPPLY_PPS_VERIFIED) &&
+	    (pd_auth_val.intval == 1) &&
+	    (val.intval == POWER_SUPPLY_PD_PPS_ACTIVE)) {
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		msleep(30);
 		usbpd_pd_contact(pdpm, POWER_SUPPLY_PPS_VERIFIED);
 		if (pdpm->fcc_votable)
 			vote(pdpm->fcc_votable, NON_PPS_PD_FCC_VOTER, false, 0);
+<<<<<<< HEAD
 	} else if (!pdpm->pd_active
 			&& (val.intval == POWER_SUPPLY_PD_PPS_ACTIVE)) {
 		usbpd_pps_non_verified_contact(pdpm, POWER_SUPPLY_PPS_NON_VERIFIED);
+=======
+	} else if (!pdpm->pd_active &&
+		   (val.intval == POWER_SUPPLY_PD_PPS_ACTIVE)) {
+		usbpd_pps_non_verified_contact(pdpm,
+					       POWER_SUPPLY_PPS_NON_VERIFIED);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (pdpm->fcc_votable)
 			vote(pdpm->fcc_votable, NON_PPS_PD_FCC_VOTER, false, 0);
 	} else if (pdpm->pd_active && !val.intval) {
@@ -1730,14 +2603,24 @@ static void usb_psy_change_work(struct work_struct *work)
 			vote(pdpm->fcc_votable, NON_PPS_PD_FCC_VOTER, false, 0);
 	} else if (!pdpm->pd_active && val.intval == POWER_SUPPLY_PD_ACTIVE) {
 		if (pdpm->fcc_votable)
+<<<<<<< HEAD
 			vote(pdpm->fcc_votable, NON_PPS_PD_FCC_VOTER, true, NON_PPS_PD_FCC_LIMIT);
+=======
+			vote(pdpm->fcc_votable, NON_PPS_PD_FCC_VOTER, true,
+			     NON_PPS_PD_FCC_LIMIT);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 out:
 	pdpm->psy_change_running = false;
 }
 
+<<<<<<< HEAD
 static int usbpd_psy_notifier_cb(struct notifier_block *nb,
 			unsigned long event, void *data)
+=======
+static int usbpd_psy_notifier_cb(struct notifier_block *nb, unsigned long event,
+				 void *data)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	struct usbpd_pm *pdpm = container_of(nb, struct usbpd_pm, nb);
 	struct power_supply *psy = data;
@@ -1778,38 +2661,59 @@ static int pd_policy_parse_dt(struct usbpd_pm *pdpm)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	rc = of_property_read_u32(node,
 			"mi,pd-bat-volt-max", &pdpm->bat_volt_max);
+=======
+	rc = of_property_read_u32(node, "mi,pd-bat-volt-max",
+				  &pdpm->bat_volt_max);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0)
 		pr_err("pd-bat-volt-max property missing, use default val\n");
 	else
 		pm_config.bat_volt_lp_lmt = pdpm->bat_volt_max;
 	pr_info("pm_config.bat_volt_lp_lmt:%d\n", pm_config.bat_volt_lp_lmt);
 
+<<<<<<< HEAD
 	rc = of_property_read_u32(node,
 			"mi,pd-bat-curr-max", &pdpm->bat_curr_max);
+=======
+	rc = of_property_read_u32(node, "mi,pd-bat-curr-max",
+				  &pdpm->bat_curr_max);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0)
 		pr_err("pd-bat-curr-max property missing, use default val\n");
 	else
 		pm_config.bat_curr_lp_lmt = pdpm->bat_curr_max;
 	pr_info("pm_config.bat_curr_lp_lmt:%d\n", pm_config.bat_curr_lp_lmt);
 
+<<<<<<< HEAD
 	rc = of_property_read_u32(node,
 			"mi,pd-bus-volt-max", &pdpm->bus_volt_max);
+=======
+	rc = of_property_read_u32(node, "mi,pd-bus-volt-max",
+				  &pdpm->bus_volt_max);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0)
 		pr_err("pd-bus-volt-max property missing, use default val\n");
 	else
 		pm_config.bus_volt_lp_lmt = pdpm->bus_volt_max;
 	pr_info("pm_config.bus_volt_lp_lmt:%d\n", pm_config.bus_volt_lp_lmt);
 
+<<<<<<< HEAD
 	rc = of_property_read_u32(node,
 			"mi,pd-bus-curr-max", &pdpm->bus_curr_max);
+=======
+	rc = of_property_read_u32(node, "mi,pd-bus-curr-max",
+				  &pdpm->bus_curr_max);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0)
 		pr_err("pd-bus-curr-max property missing, use default val\n");
 	else
 		pm_config.bus_curr_lp_lmt = pdpm->bus_curr_max;
 	pr_info("pm_config.bus_curr_lp_lmt:%d\n", pm_config.bus_curr_lp_lmt);
 
+<<<<<<< HEAD
 	rc = of_property_read_u32(node,
 			"mi,step-charge-high-vol-curr-max", &pdpm->step_charge_high_vol_curr_max);
 
@@ -1836,25 +2740,63 @@ static int pd_policy_parse_dt(struct usbpd_pm *pdpm)
 
 	rc = of_property_read_u32(node,
 			"mi,pd-bus-curr-compensate", &pdpm->bus_curr_compensate);
+=======
+	rc = of_property_read_u32(node, "mi,step-charge-high-vol-curr-max",
+				  &pdpm->step_charge_high_vol_curr_max);
+
+	pr_info("pdpm->step_charge_high_vol_curr_max:%d\n",
+		pdpm->step_charge_high_vol_curr_max);
+
+	rc = of_property_read_u32(node, "mi,cell-vol-high-threshold-mv",
+				  &pdpm->cell_vol_high_threshold_mv);
+
+	pr_info("pdpm->cell_vol_high_threshold_mv:%d\n",
+		pdpm->cell_vol_high_threshold_mv);
+
+	rc = of_property_read_u32(node, "mi,cell-vol-max-threshold-mv",
+				  &pdpm->cell_vol_max_threshold_mv);
+
+	pr_info("pdpm->cell_vol_max_threshold_mv:%d\n",
+		pdpm->cell_vol_max_threshold_mv);
+
+	rc = of_property_read_u32(node, "mi,pd-non-ffc-bat-volt-max",
+				  &pdpm->non_ffc_bat_volt_max);
+
+	pr_info("pdpm->non_ffc_bat_volt_max:%d\n", pdpm->non_ffc_bat_volt_max);
+
+	rc = of_property_read_u32(node, "mi,pd-bus-curr-compensate",
+				  &pdpm->bus_curr_compensate);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0)
 		pr_err("pd-bus-curr-compensate property missing, use default val\n");
 	else
 		pm_config.bus_curr_compensate = pdpm->bus_curr_compensate;
 
 	pdpm->therm_level_threshold = MAX_THERMAL_LEVEL;
+<<<<<<< HEAD
 	rc = of_property_read_u32(node,
 			"mi,therm-level-threshold", &pdpm->therm_level_threshold);
+=======
+	rc = of_property_read_u32(node, "mi,therm-level-threshold",
+				  &pdpm->therm_level_threshold);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0)
 		pr_err("therm-level-threshold missing, use default val\n");
 	pr_info("therm-level-threshold:%d\n", pdpm->therm_level_threshold);
 
 	pdpm->battery_warm_th = JEITA_WARM_THR;
+<<<<<<< HEAD
 	rc = of_property_read_u32(node,
 			"mi,pd-battery-warm-th", &pdpm->battery_warm_th);
+=======
+	rc = of_property_read_u32(node, "mi,pd-battery-warm-th",
+				  &pdpm->battery_warm_th);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (rc < 0)
 		pr_err("pd-battery-warm-th missing, use default val\n");
 	pr_info("pd-battery-warm-th:%d\n", pdpm->battery_warm_th);
 
+<<<<<<< HEAD
 	pdpm->cp_sec_enable = of_property_read_bool(node,
 				"mi,cp-sec-enable");
 	pm_config.cp_sec_enable = pdpm->cp_sec_enable;
@@ -1867,6 +2809,17 @@ static int pd_policy_parse_dt(struct usbpd_pm *pdpm)
 
 	pdpm->chg_enable_k81 = of_property_read_bool(node,
 				"mi,chg-enable-k81");
+=======
+	pdpm->cp_sec_enable = of_property_read_bool(node, "mi,cp-sec-enable");
+	pm_config.cp_sec_enable = pdpm->cp_sec_enable;
+
+	pdpm->use_qcom_gauge = of_property_read_bool(node, "mi,use-qcom-gauge");
+
+	pdpm->chg_enable_k11a =
+		of_property_read_bool(node, "mi,chg-enable-k11a");
+
+	pdpm->chg_enable_k81 = of_property_read_bool(node, "mi,chg-enable-k81");
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	return rc;
 }
 
@@ -1925,7 +2878,13 @@ static int usbpd_pm_remove(struct platform_device *pdev)
 }
 
 static const struct of_device_id usbpd_pm_of_match[] = {
+<<<<<<< HEAD
 	{ .compatible = "xiaomi,usbpd-pm", },
+=======
+	{
+		.compatible = "xiaomi,usbpd-pm",
+	},
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	{},
 };
 
@@ -1955,4 +2914,7 @@ module_exit(usbpd_pm_exit);
 MODULE_AUTHOR("Fei Jiang<jiangfei1@xiaomi.com>");
 MODULE_DESCRIPTION("Xiaomi usb pd statemachine for bq");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
+=======
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)

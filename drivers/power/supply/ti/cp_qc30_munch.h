@@ -9,6 +9,7 @@
 #include <linux/delay.h>
 #include <linux/workqueue.h>
 
+<<<<<<< HEAD
 typedef enum  {
     CP_STATE_ENTRY,
     CP_STATE_DISCONNECT,
@@ -65,6 +66,64 @@ typedef enum  {
 
 #define VBAT_REG_STATUS_MASK		(1 << VBAT_REG_STATUS_SHIFT)
 #define IBAT_REG_STATUS_MASK		(1 << VBAT_REG_STATUS_SHIFT)
+=======
+typedef enum {
+	CP_STATE_ENTRY,
+	CP_STATE_DISCONNECT,
+	CP_STATE_SW_ENTRY,
+	CP_STATE_SW_ENTRY_2,
+	//    CP_STATE_SW_ENTRY_3,
+	CP_STATE_SW_LOOP,
+	CP_STATE_FLASH2_ENTRY,
+	CP_STATE_FLASH2_ENTRY_1,
+	//   CP_STATE_FLASH2_ENTRY_2,
+	CP_STATE_FLASH2_ENTRY_3,
+	//  CP_STATE_FLASH2_GET_PPS_STATUS,
+	CP_STATE_FLASH2_TUNE,
+	CP_STATE_FLASH2_DELAY,
+	CP_STATE_STOP_CHARGE,
+} pm_sm_state_t;
+
+#define BAT_OVP_FAULT_SHIFT 0
+#define BAT_OCP_FAULT_SHIFT 1
+#define BUS_OVP_FAULT_SHIFT 2
+#define BUS_OCP_FAULT_SHIFT 3
+#define BAT_THERM_FAULT_SHIFT 4
+#define BUS_THERM_FAULT_SHIFT 5
+#define DIE_THERM_FAULT_SHIFT 6
+
+#define BAT_OVP_FAULT_MASK (1 << BAT_OVP_FAULT_SHIFT)
+#define BAT_OCP_FAULT_MASK (1 << BAT_OCP_FAULT_SHIFT)
+#define BUS_OVP_FAULT_MASK (1 << BUS_OVP_FAULT_SHIFT)
+#define BUS_OCP_FAULT_MASK (1 << BUS_OCP_FAULT_SHIFT)
+#define BAT_THERM_FAULT_MASK (1 << BAT_THERM_FAULT_SHIFT)
+#define BUS_THERM_FAULT_MASK (1 << BUS_THERM_FAULT_SHIFT)
+#define DIE_THERM_FAULT_MASK (1 << DIE_THERM_FAULT_SHIFT)
+
+#define BAT_OVP_ALARM_SHIFT 0
+#define BAT_OCP_ALARM_SHIFT 1
+#define BUS_OVP_ALARM_SHIFT 2
+#define BUS_OCP_ALARM_SHIFT 3
+#define BAT_THERM_ALARM_SHIFT 4
+#define BUS_THERM_ALARM_SHIFT 5
+#define DIE_THERM_ALARM_SHIFT 6
+#define BAT_UCP_ALARM_SHIFT 7
+
+#define BAT_OVP_ALARM_MASK (1 << BAT_OVP_ALARM_SHIFT)
+#define BAT_OCP_ALARM_MASK (1 << BAT_OCP_ALARM_SHIFT)
+#define BUS_OVP_ALARM_MASK (1 << BUS_OVP_ALARM_SHIFT)
+#define BUS_OCP_ALARM_MASK (1 << BUS_OCP_ALARM_SHIFT)
+#define BAT_THERM_ALARM_MASK (1 << BAT_THERM_ALARM_SHIFT)
+#define BUS_THERM_ALARM_MASK (1 << BUS_THERM_ALARM_SHIFT)
+#define DIE_THERM_ALARM_MASK (1 << DIE_THERM_ALARM_SHIFT)
+#define BAT_UCP_ALARM_MASK (1 << BAT_UCP_ALARM_SHIFT)
+
+#define VBAT_REG_STATUS_SHIFT 0
+#define IBAT_REG_STATUS_SHIFT 1
+
+#define VBAT_REG_STATUS_MASK (1 << VBAT_REG_STATUS_SHIFT)
+#define IBAT_REG_STATUS_MASK (1 << VBAT_REG_STATUS_SHIFT)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 enum hvdcp3_type {
 	HVDCP3_NONE = 0,
@@ -74,6 +133,7 @@ enum hvdcp3_type {
 	HVDCP3P5_CLASSB_27W,
 };
 
+<<<<<<< HEAD
 #define HVDCP3_CLASS_B_BAT_CURRENT_MA			5400
 #define HVDCP3_CLASS_B_BUS_CURRENT_MA			2700
 #define HVDCP3_CLASS_A_BAT_CURRENT_MA			3600
@@ -101,17 +161,55 @@ enum hvdcp3_type {
 /* jeita related */
 #define JEITA_WARM_THR			450
 #define JEITA_COOL_NOT_ALLOW_CP_THR			100
+=======
+#define HVDCP3_CLASS_B_BAT_CURRENT_MA 5400
+#define HVDCP3_CLASS_B_BUS_CURRENT_MA 2700
+#define HVDCP3_CLASS_A_BAT_CURRENT_MA 3600
+#define HVDCP3_CLASS_A_BUS_CURRENT_MA 2000
+#define MAX_PLUSE_COUNT_ALLOWED 23
+#define HVDCP3_IBUS_MINUS_DEV_VAL 550
+#define HVDCP3_IBUS_PLUS_DEV_VAL 200
+#define HVDCP3_IBAT_MINUS_DEV_VAL 600
+#define HVDCP3_IBAT_PLUS_DEV_VAL 500
+#define FAKE_HVDCP3_VBUS 5500
+#define FAKE_HVDCP3_DP_COUNT 8
+
+/* QC3.5 */
+#define HVDCP3P5_CLASS_B_BAT_CURRENT_MA 5400
+#define HVDCP3P5_CLASS_B_BUS_CURRENT_MA 2700
+#define HVDCP3P5_CLASS_A_BAT_CURRENT_MA 4200
+#define HVDCP3P5_CLASS_A_BUS_CURRENT_MA 2100
+#define MAX_HVDCP3P5_PLUSE_COUNT_ALLOWED 230
+#define HVDCP3P5_IBUS_MINUS_DEV_VAL 200
+#define HVDCP3P5_IBUS_PLUS_DEV_VAL 150
+#define HVDCP3P5_IBAT_MINUS_DEV_VAL 300
+#define HVDCP3P5_IBAT_PLUS_DEV_VAL 200
+
+#define MAX_THERMAL_LEVEL 10
+/* jeita related */
+#define JEITA_WARM_THR 450
+#define JEITA_COOL_NOT_ALLOW_CP_THR 100
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 /*
  * add hysteresis for warm threshold to avoid flash
  * charge and normal charge switch frequently at
  * the warm threshold
  */
+<<<<<<< HEAD
 #define JEITA_HYSTERESIS			20
 
 #define HIGH_CAPACITY_TRH			85
 
 #define PM_WORK_TIME_500MS	500
 #define PM_WORK_TIME_100MS	100
+=======
+#define JEITA_HYSTERESIS 20
+
+#define HIGH_CAPACITY_TRH 85
+
+#define PM_WORK_TIME_500MS 500
+#define PM_WORK_TIME_100MS 100
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 struct flash2_policy {
 	int down_steps;
@@ -181,6 +279,7 @@ struct bq2597x {
 	bool vbat_reg;
 	bool ibat_reg;
 
+<<<<<<< HEAD
 	int  vout_volt;
 	int  vbat_volt;
 	int  vbus_volt;
@@ -191,12 +290,25 @@ struct bq2597x {
 	int  bus_temp;
 	int  die_temp;
 	int  bus_error_status;
+=======
+	int vout_volt;
+	int vbat_volt;
+	int vbus_volt;
+	int ibat_curr;
+	int ibus_curr;
+
+	int bat_temp;
+	int bus_temp;
+	int die_temp;
+	int bus_error_status;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 };
 
 struct sw_charger {
 	bool charge_enabled;
 };
 
+<<<<<<< HEAD
 #define PM_STATE_LOG_MAX    32
 typedef struct {
 	bool        sw_is_charging;
@@ -225,6 +337,36 @@ typedef struct {
 	struct bq2597x			bq2597x;
 	struct sw_charger			sw_chager;
 	struct votable		*fcc_votable;
+=======
+#define PM_STATE_LOG_MAX 32
+typedef struct {
+	bool sw_is_charging;
+	bool flash2_is_charging;
+	bool sw_near_cv;
+	bool sw_fc2_init_fail;
+	bool bms_fastcharge_mode;
+	bool reverse_mode;
+
+	uint16_t ibus_lmt_curr;
+	pm_sm_state_t state; //state machine
+	pm_sm_state_t state_log[PM_STATE_LOG_MAX];
+	uint8_t log_idx;
+
+	int usb_type;
+	int hvdcp3_type;
+	int usb_present;
+	int ibat_now;
+	int capacity;
+	int bms_temp;
+	int ibus_limits;
+	int effective_ibus;
+	int thermal_l;
+	int bms_i2c_error_count;
+
+	struct bq2597x bq2597x;
+	struct sw_charger sw_chager;
+	struct votable *fcc_votable;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	struct power_supply *fc_psy;
 	struct power_supply *sw_psy;
@@ -232,6 +374,7 @@ typedef struct {
 	struct power_supply *bms_psy;
 	struct power_supply *wireless_psy;
 	/* jeita or thermal related */
+<<<<<<< HEAD
 	int			warm_threshold_temp;
 	bool			jeita_triggered;
 	bool			batt_cell_volt_triggered;
@@ -243,6 +386,18 @@ typedef struct {
 } pm_t;
 
 
+=======
+	int warm_threshold_temp;
+	bool jeita_triggered;
+	bool batt_cell_volt_triggered;
+	bool is_temp_out_fc2_range;
+	bool night_charging;
+
+	struct delayed_work qc3_pm_work;
+	struct work_struct disable_hvdcp3_work;
+} pm_t;
+
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 struct sys_config {
 	uint16_t bat_volt_lp_lmt; /*bat volt loop limit*/
 	uint16_t bat_curr_lp_lmt;
@@ -257,8 +412,13 @@ struct sys_config {
 	struct flash2_policy flash2_policy;
 
 	uint16_t min_vbat_start_flash2;
+<<<<<<< HEAD
 	bool	cp_sec_enable;
 	bool	qc3p5_supported;
+=======
+	bool cp_sec_enable;
+	bool qc3p5_supported;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 };
 
 #endif /* SRC_PDLIB_USB_PD_POLICY_MANAGER_H_ */

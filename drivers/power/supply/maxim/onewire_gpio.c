@@ -1,7 +1,11 @@
 /*
  * Copyright (c) 2016  xiaomi Inc.
  */
+<<<<<<< HEAD
 #define pr_fmt(fmt)	"[Onewire] %s: " fmt, __func__
+=======
+#define pr_fmt(fmt) "[Onewire] %s: " fmt, __func__
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 #include <linux/slab.h> /* kfree() */
 #include <linux/module.h>
@@ -21,6 +25,7 @@
 #include <linux/device.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
 #define ow_info	pr_info
 #define ow_dbg	pr_debug
 #define ow_err	pr_debug
@@ -38,6 +43,31 @@
 #define ONE_WIRE_CONFIG_IN		writel_relaxed(DRV_STRENGTH_4MA | GPIO_INPUT | GPIO_PULL_UP, g_onewire_data->gpio_cfg66_reg)// IN
 #define ONE_WIRE_OUT_HIGH		writel_relaxed(OUTPUT_HIGH, g_onewire_data->gpio_in_out_reg)// OUT: 1
 #define ONE_WIRE_OUT_LOW		writel_relaxed(OUTPUT_LOW, g_onewire_data->gpio_in_out_reg)// OUT: 0
+=======
+#define ow_info pr_info
+#define ow_dbg pr_debug
+#define ow_err pr_debug
+#define ow_log pr_err
+
+#define DRV_STRENGTH_16MA (0x7 << 6)
+#define DRV_STRENGTH_4MA (0x1 << 6)
+#define GPIO_OUTPUT (0x1 << 9)
+#define GPIO_INPUT (0x0 << 9)
+#define GPIO_PULL_UP 0x3
+#define OUTPUT_HIGH (0x1 << 1)
+#define OUTPUT_LOW 0x1
+
+#define ONE_WIRE_CONFIG_OUT                                                    \
+	writel_relaxed(DRV_STRENGTH_4MA | GPIO_OUTPUT | GPIO_PULL_UP,          \
+		       g_onewire_data->gpio_cfg66_reg) // OUT
+#define ONE_WIRE_CONFIG_IN                                                     \
+	writel_relaxed(DRV_STRENGTH_4MA | GPIO_INPUT | GPIO_PULL_UP,           \
+		       g_onewire_data->gpio_cfg66_reg) // IN
+#define ONE_WIRE_OUT_HIGH                                                      \
+	writel_relaxed(OUTPUT_HIGH, g_onewire_data->gpio_in_out_reg) // OUT: 1
+#define ONE_WIRE_OUT_LOW                                                       \
+	writel_relaxed(OUTPUT_LOW, g_onewire_data->gpio_in_out_reg) // OUT: 0
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 struct onewire_gpio_data {
 	struct platform_device *pdev;
@@ -93,11 +123,21 @@ unsigned char ow_reset(void)
 
 	ONE_WIRE_CONFIG_OUT;
 	ONE_WIRE_OUT_LOW;
+<<<<<<< HEAD
 	Delay_us(50);// 48
 	ONE_WIRE_OUT_HIGH;
 	ONE_WIRE_CONFIG_IN;
 	Delay_us(7);
 	presence = (unsigned char)readl_relaxed(g_onewire_data->gpio_in_out_reg) & 0x01; // Read
+=======
+	Delay_us(50); // 48
+	ONE_WIRE_OUT_HIGH;
+	ONE_WIRE_CONFIG_IN;
+	Delay_us(7);
+	presence =
+		(unsigned char)readl_relaxed(g_onewire_data->gpio_in_out_reg) &
+		0x01; // Read
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	Delay_us(50);
 
 	raw_spin_unlock_irqrestore(&g_onewire_data->lock, flags);
@@ -111,21 +151,35 @@ unsigned char read_bit(void)
 
 	ONE_WIRE_CONFIG_OUT;
 	ONE_WIRE_OUT_LOW;
+<<<<<<< HEAD
 	Delay_us(1);////
 	ONE_WIRE_CONFIG_IN;
 	Delay_ns(500);//
+=======
+	Delay_us(1); ////
+	ONE_WIRE_CONFIG_IN;
+	Delay_ns(500); //
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	vamm = readl_relaxed(g_onewire_data->gpio_in_out_reg); // Read
 	Delay_us(5);
 	ONE_WIRE_OUT_HIGH;
 	ONE_WIRE_CONFIG_OUT;
 	Delay_us(6);
+<<<<<<< HEAD
 	return((unsigned char)vamm & 0x01);
+=======
+	return ((unsigned char)vamm & 0x01);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 }
 
 void write_bit(char bitval)
 {
 	ONE_WIRE_OUT_LOW;
+<<<<<<< HEAD
 	Delay_us(1);//
+=======
+	Delay_us(1); //
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (bitval != 0)
 		ONE_WIRE_OUT_HIGH;
 	Delay_us(10);
@@ -142,7 +196,13 @@ unsigned char read_byte(void)
 	raw_spin_lock_irqsave(&g_onewire_data->lock, flags);
 	for (i = 0; i < 8; i++) {
 		if (read_bit())
+<<<<<<< HEAD
 			value |= 0x01 << i;// reads byte in, one byte at a time and then shifts it left
+=======
+			value |=
+				0x01
+				<< i; // reads byte in, one byte at a time and then shifts it left
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	}
 
 	raw_spin_unlock_irqrestore(&g_onewire_data->lock, flags);
@@ -160,7 +220,11 @@ void write_byte(char val)
 	ONE_WIRE_CONFIG_OUT;
 	// writes byte, one bit at a time
 	for (i = 0; i < 8; i++) {
+<<<<<<< HEAD
 		temp = val >> i ; // shifts val right ‘i’ spaces
+=======
+		temp = val >> i; // shifts val right ‘i’ spaces
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		temp &= 0x01; // copy that bit to temp
 		write_bit(temp); // write bit in temp into
 	}
@@ -176,7 +240,11 @@ EXPORT_SYMBOL(onewire_gpio_get_status);
 
 // parse dts
 static int onewire_gpio_parse_dt(struct device *dev,
+<<<<<<< HEAD
 				struct onewire_gpio_data *pdata)
+=======
+				 struct onewire_gpio_data *pdata)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	int error, val;
 	struct device_node *np = dev->of_node;
@@ -190,8 +258,12 @@ static int onewire_gpio_parse_dt(struct device *dev,
 		pdata->version = val;
 
 	// parse gpio
+<<<<<<< HEAD
 	pdata->ow_gpio = of_get_named_gpio_flags(np,
 					"xiaomi,ow_gpio", 0, NULL);
+=======
+	pdata->ow_gpio = of_get_named_gpio_flags(np, "xiaomi,ow_gpio", 0, NULL);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	ow_dbg("ow_gpio: %d\n", pdata->ow_gpio);
 
 	// parse gpio_num
@@ -202,13 +274,23 @@ static int onewire_gpio_parse_dt(struct device *dev,
 	else if (error != -EINVAL)
 		pdata->gpio_num = val;
 
+<<<<<<< HEAD
 	error = of_property_read_u32_array(np, "mi,onewire-gpio-cfg-addr", pdata->gpio_reg, 2);
+=======
+	error = of_property_read_u32_array(np, "mi,onewire-gpio-cfg-addr",
+					   pdata->gpio_reg, 2);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (error < 0)
 		ow_err("Unable to read onewire gpio addr\n");
 
 	pdata->onewire_gpio_cfg_addr = pdata->gpio_reg[0];
 	pdata->gpio_offset = pdata->gpio_reg[1];
+<<<<<<< HEAD
 	pdata->onewire_gpio_level_addr = pdata->onewire_gpio_cfg_addr + pdata->gpio_offset;
+=======
+	pdata->onewire_gpio_level_addr =
+		pdata->onewire_gpio_cfg_addr + pdata->gpio_offset;
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	return 0;
 }
@@ -218,25 +300,40 @@ static int onewire_gpio_pinctrl_init(struct onewire_gpio_data *onewire_data)
 {
 	int retval;
 
+<<<<<<< HEAD
 	onewire_data->ow_gpio_pinctrl = devm_pinctrl_get(&onewire_data->pdev->dev);
+=======
+	onewire_data->ow_gpio_pinctrl =
+		devm_pinctrl_get(&onewire_data->pdev->dev);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (IS_ERR_OR_NULL(onewire_data->ow_gpio_pinctrl)) {
 		retval = PTR_ERR(onewire_data->ow_gpio_pinctrl);
 		ow_err("Target does not use pinctrl %d\n", retval);
 		goto ow_gpio_err_pinctrl_get;
 	}
 
+<<<<<<< HEAD
 	onewire_data->pinctrl_state_active
 		= pinctrl_lookup_state(onewire_data->ow_gpio_pinctrl,
 					"onewire_active");
+=======
+	onewire_data->pinctrl_state_active = pinctrl_lookup_state(
+		onewire_data->ow_gpio_pinctrl, "onewire_active");
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (IS_ERR_OR_NULL(onewire_data->pinctrl_state_active)) {
 		retval = PTR_ERR(onewire_data->pinctrl_state_active);
 		ow_err("Can not lookup onewire_active pinstate %d\n", retval);
 		goto ow_gpio_err_pinctrl_lookup;
 	}
 
+<<<<<<< HEAD
 	onewire_data->pinctrl_state_sleep
 		= pinctrl_lookup_state(onewire_data->ow_gpio_pinctrl,
 					"onewire_sleep");
+=======
+	onewire_data->pinctrl_state_sleep = pinctrl_lookup_state(
+		onewire_data->ow_gpio_pinctrl, "onewire_sleep");
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (IS_ERR_OR_NULL(onewire_data->pinctrl_state_sleep)) {
 		retval = PTR_ERR(onewire_data->pinctrl_state_sleep);
 		ow_err("Can not lookup onewire_sleep  pinstate %d\n", retval);
@@ -255,7 +352,12 @@ ow_gpio_err_pinctrl_lookup:
 
 // read data from file
 static ssize_t onewire_gpio_ow_gpio_status_read(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr, char *buf)
+=======
+						struct device_attribute *attr,
+						char *buf)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	int status;
 	struct onewire_gpio_data *onewire_data = dev_get_drvdata(dev);
@@ -267,13 +369,22 @@ struct device_attribute *attr, char *buf)
 
 // write data to file
 static ssize_t onewire_gpio_ow_gpio_store(struct device *dev,
+<<<<<<< HEAD
 struct device_attribute *attr,
 const char *buf, size_t count)
+=======
+					  struct device_attribute *attr,
+					  const char *buf, size_t count)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	unsigned char result = 0x01;
 	int buf_int;
 	unsigned char i;
+<<<<<<< HEAD
 	unsigned char RomID[8] = {0};
+=======
+	unsigned char RomID[8] = { 0 };
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 	if (sscanf(buf, "%1u", &buf_int) != 1)
 		return -EINVAL;
@@ -315,7 +426,13 @@ const char *buf, size_t count)
 		for (i = 0; i < 8; i++)
 			RomID[i] = read_byte();
 
+<<<<<<< HEAD
 		ow_log("RomID = %02x%02x%02x%02x%02x%02x%02x%02x\n", RomID[0], RomID[1], RomID[2], RomID[3], RomID[4], RomID[5], RomID[6], RomID[7]);
+=======
+		ow_log("RomID = %02x%02x%02x%02x%02x%02x%02x%02x\n", RomID[0],
+		       RomID[1], RomID[2], RomID[3], RomID[4], RomID[5],
+		       RomID[6], RomID[7]);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	} else if (buf_int == 8) {
 		ONE_WIRE_CONFIG_OUT;
 		ONE_WIRE_OUT_HIGH;
@@ -378,8 +495,13 @@ const char *buf, size_t count)
 }
 
 static DEVICE_ATTR(ow_gpio, S_IRUGO | S_IWUSR | S_IWGRP,
+<<<<<<< HEAD
 		onewire_gpio_ow_gpio_status_read,
 		onewire_gpio_ow_gpio_store);
+=======
+		   onewire_gpio_ow_gpio_status_read,
+		   onewire_gpio_ow_gpio_store);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 
 static int onewire_gpio_probe(struct platform_device *pdev)
 {
@@ -394,8 +516,13 @@ static int onewire_gpio_probe(struct platform_device *pdev)
 
 	if (pdev->dev.of_node) {
 		onewire_data = devm_kzalloc(&pdev->dev,
+<<<<<<< HEAD
 			sizeof(struct onewire_gpio_data),
 			GFP_KERNEL);
+=======
+					    sizeof(struct onewire_gpio_data),
+					    GFP_KERNEL);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (!onewire_data) {
 			ow_err("Failed to allocate memory\n");
 			return -ENOMEM;
@@ -424,8 +551,14 @@ static int onewire_gpio_probe(struct platform_device *pdev)
 	// pinctrl init
 	retval = onewire_gpio_pinctrl_init(onewire_data);
 	if (!retval && onewire_data->ow_gpio_pinctrl) {
+<<<<<<< HEAD
 		retval = pinctrl_select_state(onewire_data->ow_gpio_pinctrl,
 					onewire_data->pinctrl_state_active);
+=======
+		retval = pinctrl_select_state(
+			onewire_data->ow_gpio_pinctrl,
+			onewire_data->pinctrl_state_active);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		if (retval < 0)
 			ow_err("Failed to select active pinstate %d\n", retval);
 	}
@@ -434,14 +567,22 @@ static int onewire_gpio_probe(struct platform_device *pdev)
 
 	// request onewire gpio
 	if (gpio_is_valid(onewire_data->ow_gpio)) {
+<<<<<<< HEAD
 		retval = gpio_request(onewire_data->ow_gpio,
 						"onewire gpio");
+=======
+		retval = gpio_request(onewire_data->ow_gpio, "onewire gpio");
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	} else {
 		retval = -EINVAL;
 	}
 	if (retval) {
+<<<<<<< HEAD
 		ow_err("request onewire gpio failed, retval=%d\n",
 				retval);
+=======
+		ow_err("request onewire gpio failed, retval=%d\n", retval);
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 		goto onewire_ow_gpio_err;
 	}
 
@@ -451,6 +592,7 @@ static int onewire_gpio_probe(struct platform_device *pdev)
 	onewire_data->ow_gpio_desc = gpio_to_desc(onewire_data->ow_gpio);
 	onewire_data->ow_gpio_chip = gpiod_to_chip(onewire_data->ow_gpio_desc);
 
+<<<<<<< HEAD
 	onewire_data->gpio_in_out_reg = devm_ioremap(&pdev->dev,
 					(uint32_t)onewire_data->onewire_gpio_level_addr, 0x4);
 	onewire_data->gpio_cfg66_reg = devm_ioremap(&pdev->dev,
@@ -459,6 +601,19 @@ static int onewire_gpio_probe(struct platform_device *pdev)
 	// create device node
 	onewire_data->dev = device_create(onewire_class,
 		pdev->dev.parent->parent, onewire_major, onewire_data, "onewirectrl");
+=======
+	onewire_data->gpio_in_out_reg =
+		devm_ioremap(&pdev->dev,
+			     (uint32_t)onewire_data->onewire_gpio_level_addr,
+			     0x4);
+	onewire_data->gpio_cfg66_reg = devm_ioremap(
+		&pdev->dev, (uint32_t)onewire_data->onewire_gpio_cfg_addr, 0x4);
+
+	// create device node
+	onewire_data->dev =
+		device_create(onewire_class, pdev->dev.parent->parent,
+			      onewire_major, onewire_data, "onewirectrl");
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (IS_ERR(onewire_data->dev)) {
 		ow_err("Failed to create interface device\n");
 		goto onewire_interface_dev_create_err;
@@ -474,7 +629,11 @@ static int onewire_gpio_probe(struct platform_device *pdev)
 	}
 
 	retval = sysfs_create_link(&onewire_data->dev->kobj, &pdev->dev.kobj,
+<<<<<<< HEAD
 								"pltdev");
+=======
+				   "pltdev");
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	if (retval) {
 		ow_err("Failed to create sysfs link\n");
 		goto onewire_syfs_create_link_err;
@@ -510,7 +669,11 @@ static int onewire_gpio_remove(struct platform_device *pdev)
 }
 
 static long onewire_dev_ioctl(struct file *file, unsigned int cmd,
+<<<<<<< HEAD
 						unsigned long arg)
+=======
+			      unsigned long arg)
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 {
 	ow_dbg("%d, cmd: 0x%x\n", __LINE__, cmd);
 	return 0;
@@ -526,6 +689,7 @@ static int onewire_dev_release(struct inode *inode, struct file *file)
 }
 
 static const struct file_operations onewire_dev_fops = {
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
 	.open		= onewire_dev_open,
 	.unlocked_ioctl = onewire_dev_ioctl,
@@ -534,6 +698,16 @@ static const struct file_operations onewire_dev_fops = {
 
 static const struct of_device_id onewire_gpio_dt_match[] = {
 	{.compatible = "xiaomi,onewire_gpio"},
+=======
+	.owner = THIS_MODULE,
+	.open = onewire_dev_open,
+	.unlocked_ioctl = onewire_dev_ioctl,
+	.release = onewire_dev_release,
+};
+
+static const struct of_device_id onewire_gpio_dt_match[] = {
+	{ .compatible = "xiaomi,onewire_gpio" },
+>>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 	{},
 };
 
