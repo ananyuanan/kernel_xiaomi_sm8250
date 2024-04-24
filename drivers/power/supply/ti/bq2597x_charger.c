@@ -551,17 +551,23 @@ EXPORT_SYMBOL_GPL(bq2597x_enable_wdt);
 // 	val <<= BQ2597X_WATCHDOG_SHIFT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = bq2597x_update_bits(bq, BQ2597X_REG_0B,
 				BQ2597X_WATCHDOG_MASK, val);
 	return ret;
 }
 EXPORT_SYMBOL_GPL(bq2597x_set_wdt);
 =======
+=======
+>>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 // 	ret = bq2597x_update_bits(bq, BQ2597X_REG_0B, BQ2597X_WATCHDOG_MASK,
 // 				  val);
 // 	return ret;
 // }
 // EXPORT_SYMBOL_GPL(bq2597x_set_wdt);
+<<<<<<< HEAD
+>>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
+=======
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 
 static int bq2597x_enable_batovp(struct bq2597x *bq, bool enable)
@@ -1249,11 +1255,18 @@ EXPORT_SYMBOL_GPL(bq2597x_set_fault_int_mask);
 // 	val &= ~mask;
 
 // 	ret = bq2597x_write_byte(bq, BQ2597X_REG_12, val);
+<<<<<<< HEAD
 
 // 	return ret;
 // }
 // EXPORT_SYMBOL_GPL(bq2597x_clear_fault_int_mask);
 
+=======
+
+// 	return ret;
+// }
+// EXPORT_SYMBOL_GPL(bq2597x_clear_fault_int_mask);
+>>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 
 static int bq2597x_set_sense_resistor(struct bq2597x *bq, int r_mohm)
 {
@@ -2252,6 +2265,7 @@ static int bq2597x_psy_register(struct bq2597x *bq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void bq2597x_dump_reg(struct bq2597x *bq)
 {
 
@@ -2274,6 +2288,14 @@ EXPORT_SYMBOL_GPL(bq2597x_dump_reg);
 // 	u8 val;
 // 	u8 addr;
 
+=======
+// static void bq2597x_dump_reg(struct bq2597x *bq)
+// {
+// 	int ret;
+// 	u8 val;
+// 	u8 addr;
+
+>>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 // 	for (addr = 0x00; addr <= 0x2B; addr++) {
 // 		ret = bq2597x_read_byte(bq, addr, &val);
 // 		if (!ret)
@@ -2281,6 +2303,9 @@ EXPORT_SYMBOL_GPL(bq2597x_dump_reg);
 // 	}
 // }
 // EXPORT_SYMBOL_GPL(bq2597x_dump_reg);
+<<<<<<< HEAD
+>>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
+=======
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 
 static void bq2597x_dump_important_regs(struct bq2597x *bq)
