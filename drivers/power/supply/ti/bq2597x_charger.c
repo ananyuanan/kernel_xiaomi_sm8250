@@ -532,29 +532,37 @@ static int bq2597x_enable_wdt(struct bq2597x *bq, bool enable)
 }
 EXPORT_SYMBOL_GPL(bq2597x_enable_wdt);
 
-static int bq2597x_set_wdt(struct bq2597x *bq, int ms)
-{
-	int ret;
-	u8 val;
+// static int bq2597x_set_wdt(struct bq2597x *bq, int ms)
+// {
+// 	int ret;
+// 	u8 val;
 
-	if (ms == 500)
-		val = BQ2597X_WATCHDOG_0P5S;
-	else if (ms == 1000)
-		val = BQ2597X_WATCHDOG_1S;
-	else if (ms == 5000)
-		val = BQ2597X_WATCHDOG_5S;
-	else if (ms == 30000)
-		val = BQ2597X_WATCHDOG_30S;
-	else
-		val = BQ2597X_WATCHDOG_30S;
+// 	if (ms == 500)
+// 		val = BQ2597X_WATCHDOG_0P5S;
+// 	else if (ms == 1000)
+// 		val = BQ2597X_WATCHDOG_1S;
+// 	else if (ms == 5000)
+// 		val = BQ2597X_WATCHDOG_5S;
+// 	else if (ms == 30000)
+// 		val = BQ2597X_WATCHDOG_30S;
+// 	else
+// 		val = BQ2597X_WATCHDOG_30S;
 
-	val <<= BQ2597X_WATCHDOG_SHIFT;
+// 	val <<= BQ2597X_WATCHDOG_SHIFT;
 
+<<<<<<< HEAD
 	ret = bq2597x_update_bits(bq, BQ2597X_REG_0B,
 				BQ2597X_WATCHDOG_MASK, val);
 	return ret;
 }
 EXPORT_SYMBOL_GPL(bq2597x_set_wdt);
+=======
+// 	ret = bq2597x_update_bits(bq, BQ2597X_REG_0B, BQ2597X_WATCHDOG_MASK,
+// 				  val);
+// 	return ret;
+// }
+// EXPORT_SYMBOL_GPL(bq2597x_set_wdt);
+>>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 
 static int bq2597x_enable_batovp(struct bq2597x *bq, bool enable)
 {
@@ -1195,22 +1203,22 @@ static int bq2597x_set_alarm_int_mask(struct bq2597x *bq, u8 mask)
 }
 EXPORT_SYMBOL_GPL(bq2597x_set_alarm_int_mask);
 
-static int bq2597x_clear_alarm_int_mask(struct bq2597x *bq, u8 mask)
-{
-	int ret;
-	u8 val;
+// static int bq2597x_clear_alarm_int_mask(struct bq2597x *bq, u8 mask)
+// {
+// 	int ret;
+// 	u8 val;
 
-	ret = bq2597x_read_byte(bq, BQ2597X_REG_0F, &val);
-	if (ret)
-		return ret;
+// 	ret = bq2597x_read_byte(bq, BQ2597X_REG_0F, &val);
+// 	if (ret)
+// 		return ret;
 
-	val &= ~mask;
+// 	val &= ~mask;
 
-	ret = bq2597x_write_byte(bq, BQ2597X_REG_0F, val);
+// 	ret = bq2597x_write_byte(bq, BQ2597X_REG_0F, val);
 
-	return ret;
-}
-EXPORT_SYMBOL_GPL(bq2597x_clear_alarm_int_mask);
+// 	return ret;
+// }
+// EXPORT_SYMBOL_GPL(bq2597x_clear_alarm_int_mask);
 
 static int bq2597x_set_fault_int_mask(struct bq2597x *bq, u8 mask)
 {
@@ -1229,22 +1237,22 @@ static int bq2597x_set_fault_int_mask(struct bq2597x *bq, u8 mask)
 }
 EXPORT_SYMBOL_GPL(bq2597x_set_fault_int_mask);
 
-static int bq2597x_clear_fault_int_mask(struct bq2597x *bq, u8 mask)
-{
-	int ret;
-	u8 val;
+// static int bq2597x_clear_fault_int_mask(struct bq2597x *bq, u8 mask)
+// {
+// 	int ret;
+// 	u8 val;
 
-	ret = bq2597x_read_byte(bq, BQ2597X_REG_12, &val);
-	if (ret)
-		return ret;
+// 	ret = bq2597x_read_byte(bq, BQ2597X_REG_12, &val);
+// 	if (ret)
+// 		return ret;
 
-	val &= ~mask;
+// 	val &= ~mask;
 
-	ret = bq2597x_write_byte(bq, BQ2597X_REG_12, val);
+// 	ret = bq2597x_write_byte(bq, BQ2597X_REG_12, val);
 
-	return ret;
-}
-EXPORT_SYMBOL_GPL(bq2597x_clear_fault_int_mask);
+// 	return ret;
+// }
+// EXPORT_SYMBOL_GPL(bq2597x_clear_fault_int_mask);
 
 
 static int bq2597x_set_sense_resistor(struct bq2597x *bq, int r_mohm)
@@ -2243,6 +2251,7 @@ static int bq2597x_psy_register(struct bq2597x *bq)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void bq2597x_dump_reg(struct bq2597x *bq)
 {
 
@@ -2258,6 +2267,21 @@ static void bq2597x_dump_reg(struct bq2597x *bq)
 
 }
 EXPORT_SYMBOL_GPL(bq2597x_dump_reg);
+=======
+// static void bq2597x_dump_reg(struct bq2597x *bq)
+// {
+// 	int ret;
+// 	u8 val;
+// 	u8 addr;
+
+// 	for (addr = 0x00; addr <= 0x2B; addr++) {
+// 		ret = bq2597x_read_byte(bq, addr, &val);
+// 		if (!ret)
+// 			bq_err("Reg[%02X] = 0x%02X\n", addr, val);
+// 	}
+// }
+// EXPORT_SYMBOL_GPL(bq2597x_dump_reg);
+>>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 
 static void bq2597x_dump_important_regs(struct bq2597x *bq)
 {
