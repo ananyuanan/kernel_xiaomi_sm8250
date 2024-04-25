@@ -694,6 +694,7 @@ EXPORT_SYMBOL_GPL(bq2597x_enable_wdt);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 // static int bq2597x_set_wdt(struct bq2597x *bq, int ms)
@@ -701,6 +702,13 @@ EXPORT_SYMBOL_GPL(bq2597x_enable_wdt);
 // 	int ret;
 // 	u8 val;
 <<<<<<< HEAD
+=======
+#ifdef CONFIG_CORESIGHT
+static int bq2597x_set_wdt(struct bq2597x *bq, int ms)
+{
+	int ret;
+	u8 val;
+>>>>>>> parent of 0e4a7c2c9944 (Revert "drivers: power: supply: Disable coresight code if !CONFIG_CORESIGHT")
 
 // 	if (ms == 500)
 // 		val = BQ2597X_WATCHDOG_0P5S;
@@ -722,6 +730,7 @@ EXPORT_SYMBOL_GPL(bq2597x_enable_wdt);
 	return ret;
 }
 EXPORT_SYMBOL_GPL(bq2597x_set_wdt);
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
@@ -769,6 +778,9 @@ EXPORT_SYMBOL_GPL(bq2597x_set_wdt);
 // }
 // EXPORT_SYMBOL_GPL(bq2597x_set_wdt);
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
+=======
+#endif
+>>>>>>> parent of 0e4a7c2c9944 (Revert "drivers: power: supply: Disable coresight code if !CONFIG_CORESIGHT")
 
 static int bq2597x_enable_batovp(struct bq2597x *bq, bool enable)
 {
@@ -1572,6 +1584,7 @@ EXPORT_SYMBOL_GPL(bq2597x_set_alarm_int_mask);
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 // static int bq2597x_clear_alarm_int_mask(struct bq2597x *bq, u8 mask)
@@ -1592,6 +1605,9 @@ EXPORT_SYMBOL_GPL(bq2597x_set_alarm_int_mask);
 // }
 // EXPORT_SYMBOL_GPL(bq2597x_clear_alarm_int_mask);
 =======
+=======
+#ifdef CONFIG_CORESIGHT
+>>>>>>> parent of 0e4a7c2c9944 (Revert "drivers: power: supply: Disable coresight code if !CONFIG_CORESIGHT")
 static int bq2597x_clear_alarm_int_mask(struct bq2597x *bq, u8 mask)
 {
 	int ret;
@@ -1611,12 +1627,16 @@ static int bq2597x_clear_alarm_int_mask(struct bq2597x *bq, u8 mask)
 	return ret;
 }
 EXPORT_SYMBOL_GPL(bq2597x_clear_alarm_int_mask);
+<<<<<<< HEAD
 >>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 =======
 // 	return ret;
 // }
 // EXPORT_SYMBOL_GPL(bq2597x_clear_alarm_int_mask);
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
+=======
+#endif
+>>>>>>> parent of 0e4a7c2c9944 (Revert "drivers: power: supply: Disable coresight code if !CONFIG_CORESIGHT")
 
 static int bq2597x_set_fault_int_mask(struct bq2597x *bq, u8 mask)
 {
@@ -1635,6 +1655,7 @@ static int bq2597x_set_fault_int_mask(struct bq2597x *bq, u8 mask)
 }
 EXPORT_SYMBOL_GPL(bq2597x_set_fault_int_mask);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -1665,6 +1686,9 @@ EXPORT_SYMBOL_GPL(bq2597x_set_fault_int_mask);
 // EXPORT_SYMBOL_GPL(bq2597x_clear_fault_int_mask);
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 =======
+=======
+#ifdef CONFIG_CORESIGHT
+>>>>>>> parent of 0e4a7c2c9944 (Revert "drivers: power: supply: Disable coresight code if !CONFIG_CORESIGHT")
 static int bq2597x_clear_fault_int_mask(struct bq2597x *bq, u8 mask)
 {
 	int ret;
@@ -1684,12 +1708,17 @@ static int bq2597x_clear_fault_int_mask(struct bq2597x *bq, u8 mask)
 	return ret;
 }
 EXPORT_SYMBOL_GPL(bq2597x_clear_fault_int_mask);
+<<<<<<< HEAD
 >>>>>>> a1967433c52b (drivers: power: supply: Import Xiaomi drivers/changes)
 =======
 // 	return ret;
 // }
 // EXPORT_SYMBOL_GPL(bq2597x_clear_fault_int_mask);
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
+=======
+#endif
+
+>>>>>>> parent of 0e4a7c2c9944 (Revert "drivers: power: supply: Disable coresight code if !CONFIG_CORESIGHT")
 
 static int bq2597x_set_sense_resistor(struct bq2597x *bq, int r_mohm)
 {
@@ -2958,6 +2987,10 @@ static int bq2597x_psy_register(struct bq2597x *bq)
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CORESIGHT
+>>>>>>> parent of 0e4a7c2c9944 (Revert "drivers: power: supply: Disable coresight code if !CONFIG_CORESIGHT")
 static void bq2597x_dump_reg(struct bq2597x *bq)
 {
 
@@ -2978,6 +3011,7 @@ static void bq2597x_dump_reg(struct bq2597x *bq)
 
 }
 EXPORT_SYMBOL_GPL(bq2597x_dump_reg);
+<<<<<<< HEAD
 =======
 // static void bq2597x_dump_reg(struct bq2597x *bq)
 // {
@@ -3013,6 +3047,9 @@ EXPORT_SYMBOL_GPL(bq2597x_dump_reg);
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
 =======
 >>>>>>> 9a06404ed288 (drivers: power: supply: ti: bq2597x_charger: Disable some unused functions)
+=======
+#endif
+>>>>>>> parent of 0e4a7c2c9944 (Revert "drivers: power: supply: Disable coresight code if !CONFIG_CORESIGHT")
 
 static void bq2597x_dump_important_regs(struct bq2597x *bq)
 {
