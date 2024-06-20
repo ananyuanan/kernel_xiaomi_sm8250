@@ -1310,17 +1310,8 @@ static int loop_clr_fd(struct loop_device *lo)
 	return __loop_clr_fd(lo, false);
 }
 
-/**
- * loop_set_status_from_info - configure device from loop_info
- * @lo: struct loop_device to configure
- * @info: struct loop_info64 to configure the device with
- *
- * Configures the loop device parameters according to the passed
- * in loop_info64 configuration.
- */
 static int
-loop_set_status_from_info(struct loop_device *lo,
-			  const struct loop_info64 *info)
+loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
 {
 	int err;
 	struct block_device *bdev;
@@ -1366,7 +1357,7 @@ loop_set_status_from_info(struct loop_device *lo,
 
 	err = loop_set_status_from_info(lo, info);
 	if (err)
-		return err;
+		goto out_unfreeze;
 
 	/* Mask out flags that can't be set using LOOP_SET_STATUS. */
 	lo->lo_flags &= LOOP_SET_STATUS_SETTABLE_FLAGS;
@@ -1381,8 +1372,7 @@ loop_set_status_from_info(struct loop_device *lo,
 		loop_set_size(lo, new_size);
 	}
 
-	lo->lo_offset = info->lo_offset;
-	lo->lo_sizelimit = info->lo_sizelimit;
+	loop_config_discard(lo);
 
 	/* update dio if lo_offset or transfer is changed */
 	__loop_update_dio(lo, lo->use_dio);
@@ -1423,6 +1413,11 @@ loop_get_status(struct loop_device *lo, struct loop_info64 *info)
 	info->lo_number = lo->lo_number;
 	info->lo_offset = lo->lo_offset;
 	info->lo_sizelimit = lo->lo_sizelimit;
+
+	/* loff_t vars have been assigned __u64 */
+	if (lo->lo_offset < 0 || lo->lo_sizelimit < 0)
+		return -EOVERFLOW;
+
 	info->lo_flags = lo->lo_flags;
 	memcpy(info->lo_file_name, lo->lo_file_name, LO_NAME_SIZE);
 	memcpy(info->lo_crypt_name, lo->lo_crypt_name, LO_NAME_SIZE);
