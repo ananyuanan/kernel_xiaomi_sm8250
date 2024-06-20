@@ -2056,7 +2056,7 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
 	 * is taken care of later in probe itself.
 	 */
 	if (context == VF_REG_IN_NOTIFIER)
-		queue_delayed_work(system_power_efficient_wq,&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
+		schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
 
 	call_netdevice_notifiers(NETDEV_JOIN, vf_netdev);
 
