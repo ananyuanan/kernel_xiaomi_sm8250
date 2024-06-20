@@ -480,8 +480,7 @@ static int hfi_process_session_cvp_msg(u32 device_id,
 	struct cvp_session_msg *sess_msg;
 	struct msm_cvp_inst *inst = NULL;
 	struct msm_cvp_core *core;
-	void *session_id;
-
+	uintptr_t session_id_uintptr;  
 	if (!pkt) {
 		dprintk(CVP_ERR, "%s: invalid param\n", __func__);
 		return -EINVAL;
@@ -489,9 +488,8 @@ static int hfi_process_session_cvp_msg(u32 device_id,
 		dprintk(CVP_ERR, "%s: bad_pkt_size %d\n", __func__, pkt->size);
 		return -E2BIG;
 	}
-	session_id = (void *)(uintptr_t)get_msg_session_id(pkt);
-	core = list_first_entry(&cvp_driver->cores, struct msm_cvp_core, list);
-	inst = cvp_get_inst_from_id(core, (unsigned int)session_id);
+	session_id_uintptr = (uintptr_t)get_msg_session_id(pkt);  
+    inst = cvp_get_inst_from_id(core, session_id_uintptr);
 
 	if (!inst) {
 		dprintk(CVP_ERR, "%s: invalid session\n", __func__);
@@ -533,7 +531,7 @@ static int hfi_process_session_cvp_msg(u32 device_id,
 	dprintk(CVP_DBG,
 		"%s: Received msg %x cmd_done.status=%d sessionid=%x\n",
 		__func__, pkt->packet_type,
-		hfi_map_err_status(get_msg_errorcode(pkt)), session_id);
+		hfi_map_err_status(get_msg_errorcode(pkt)), session_id_uintptr);
 
 	spin_lock(&inst->session_queue.lock);
 	if (inst->session_queue.msg_count >= MAX_NUM_MSGS_PER_SESSION) {
